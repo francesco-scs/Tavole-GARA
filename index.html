@@ -2,1319 +2,811 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tavola A3 · Compositore Gara</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Tavola A3 · Compositore</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0f0f13;
-  --panel: #17171e;
-  --panel2: #1e1e28;
-  --border: #2a2a38;
-  --accent: #6c63ff;
-  --accent2: #ff6b35;
-  --green: #3dd68c;
-  --text: #e8e8f0;
-  --muted: #6b6b80;
-  --font-ui: 'DM Sans', sans-serif;
-  --font-mono: 'DM Mono', monospace;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-ui);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── TOP BAR ── */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 28px;
-  border-bottom: 1px solid var(--border);
-  background: var(--panel);
-}
-.topbar-brand {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--accent);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-.topbar-step {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--muted);
-}
-
-/* ── PROGRESS BAR ── */
-.progress-bar {
-  height: 3px;
-  background: var(--border);
-  position: relative;
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  transition: width 0.5s ease;
-}
-
-/* ── MAIN LAYOUT ── */
-.main {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  overflow: hidden;
-  height: calc(100vh - 53px);
-}
-
-/* ── SIDEBAR NAV ── */
-.sidenav {
-  background: var(--panel);
-  border-right: 1px solid var(--border);
-  padding: 24px 0;
-  overflow-y: auto;
-}
-.sidenav-section {
-  padding: 0 20px;
-  margin-bottom: 24px;
-}
-.sidenav-section-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--muted);
-  transition: all 0.15s;
-  margin-bottom: 2px;
-  border: 1px solid transparent;
-}
-.nav-item:hover { background: var(--panel2); color: var(--text); }
-.nav-item.active { background: var(--panel2); color: var(--text); border-color: var(--border); }
-.nav-item.done .nav-dot { background: var(--green); }
-.nav-item.active .nav-dot { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-.nav-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--border);
-  flex-shrink: 0;
-  transition: all 0.2s;
-}
-.nav-num {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--muted);
-  margin-left: auto;
-}
-
-/* ── CONTENT AREA ── */
-.content {
-  overflow-y: auto;
-  padding: 40px 48px;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-/* ── STEP PANEL ── */
-.step-panel { display: none; }
-.step-panel.active { display: flex; flex-direction: column; gap: 28px; }
-
-.step-header { margin-bottom: 8px; }
-.step-number {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--accent);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.step-title {
-  font-size: 26px;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.2;
-}
-.step-desc {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 6px;
-  line-height: 1.6;
-}
-
-/* ── FORM ELEMENTS ── */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-.form-full { grid-column: 1 / -1; }
-
-.field { display: flex; flex-direction: column; gap: 6px; }
-.field label {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.field input, .field textarea, .field select {
-  background: var(--panel2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-family: var(--font-ui);
-  font-size: 13px;
-  padding: 10px 14px;
-  outline: none;
-  transition: border-color 0.15s;
-  resize: vertical;
-}
-.field input:focus, .field textarea:focus, .field select:focus {
-  border-color: var(--accent);
-}
-.field input::placeholder, .field textarea::placeholder {
-  color: #3a3a50;
-}
-.field select option { background: var(--panel2); }
-.field textarea { min-height: 80px; }
-
-/* ── CARD SECTION ── */
-.section-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 24px;
-}
-.section-card-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 18px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.section-card-title::before {
-  content: '';
-  display: block;
-  width: 3px; height: 16px;
-  background: var(--accent);
-  border-radius: 2px;
-}
-
-/* ── COLOR PICKER ── */
-.color-row { display: flex; gap: 12px; flex-wrap: wrap; }
-.color-field { display: flex; flex-direction: column; gap: 6px; align-items: center; }
-.color-field label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-.color-field input[type="color"] {
-  width: 48px; height: 48px;
-  border-radius: 8px;
-  border: 2px solid var(--border);
-  padding: 2px;
-  background: var(--panel2);
-  cursor: pointer;
-}
-
-/* ── FONT SELECTOR ── */
-.font-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.font-option {
-  background: var(--panel2);
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  padding: 14px 12px;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-align: center;
-}
-.font-option:hover { border-color: var(--muted); }
-.font-option.selected { border-color: var(--accent); background: rgba(108,99,255,0.08); }
-.font-option .font-name { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; }
-.font-sample { font-size: 18px; font-weight: 600; color: var(--text); line-height: 1; }
-
-/* ── UPLOAD ZONE ── */
-.upload-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-.upload-zone {
-  border: 2px dashed var(--border);
-  border-radius: 8px;
-  padding: 20px 12px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-  min-height: 120px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-.upload-zone:hover { border-color: var(--accent); background: rgba(108,99,255,0.05); }
-.upload-zone.has-file { border-color: var(--green); background: rgba(61,214,140,0.05); }
-.upload-zone input[type="file"] { display: none; }
-.upload-icon { font-size: 24px; }
-.upload-label { font-size: 11px; color: var(--muted); line-height: 1.4; }
-.upload-slot-name { font-size: 10px; font-weight: 600; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
-.upload-preview {
-  width: 100%;
-  max-height: 80px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-.upload-filename { font-size: 10px; color: var(--green); word-break: break-all; }
-
-/* ── LOGO UPLOAD ── */
-.logo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-.logo-zone {
-  border: 2px dashed var(--border);
-  border-radius: 8px;
-  padding: 16px 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.15s;
-  min-height: 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-.logo-zone:hover { border-color: var(--accent2); background: rgba(255,107,53,0.05); }
-.logo-zone.has-file { border-color: var(--accent2); background: rgba(255,107,53,0.07); }
-.logo-zone input[type="file"] { display: none; }
-.logo-preview { max-width: 80px; max-height: 50px; object-fit: contain; }
-
-/* ── LAYOUT PICKER ── */
-.layout-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.layout-option {
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  padding: 14px;
-  cursor: pointer;
-  transition: all 0.15s;
-  background: var(--panel2);
-}
-.layout-option:hover { border-color: var(--muted); }
-.layout-option.selected { border-color: var(--accent); }
-.layout-thumb {
-  width: 100%;
-  aspect-ratio: 1.414;
-  background: var(--bg);
-  border-radius: 4px;
-  margin-bottom: 10px;
-  display: grid;
-  gap: 3px;
-  padding: 6px;
-}
-.lt-cell { background: var(--border); border-radius: 2px; }
-.layout-name { font-size: 11px; color: var(--text); font-weight: 500; }
-.layout-desc { font-size: 10px; color: var(--muted); margin-top: 2px; }
-
-/* ── CRITERIA BLOCKS ── */
-.criteria-list-edit { display: flex; flex-direction: column; gap: 10px; }
-.criterio-block {
-  background: var(--panel2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
-  display: grid;
-  grid-template-columns: 80px 1fr auto;
-  gap: 12px;
-  align-items: start;
-}
-.criterio-tag {
-  background: var(--accent);
-  color: white;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 10px;
-  border-radius: 4px;
-  text-align: center;
-}
-.criterio-inputs { display: flex; flex-direction: column; gap: 8px; }
-.criterio-remove {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: all 0.15s;
-}
-.criterio-remove:hover { border-color: #ff4444; color: #ff4444; }
-.add-criterio {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  background: none;
-  border: 1px dashed var(--border);
-  border-radius: 8px;
-  color: var(--muted);
-  font-family: var(--font-ui);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.15s;
-  width: 100%;
-}
-.add-criterio:hover { border-color: var(--accent); color: var(--accent); }
-
-/* ── NAVIGATION BUTTONS ── */
-.step-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-  margin-top: 8px;
-}
-.btn {
-  padding: 10px 24px;
-  border-radius: 7px;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  border: none;
-  transition: all 0.15s;
-}
-.btn-ghost {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--muted);
-}
-.btn-ghost:hover { border-color: var(--text); color: var(--text); }
-.btn-primary {
-  background: var(--accent);
-  color: white;
-}
-.btn-primary:hover { background: #7d76ff; }
-.btn-generate {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: white;
-  font-size: 14px;
-  padding: 12px 32px;
-}
-.btn-generate:hover { opacity: 0.9; transform: translateY(-1px); }
-
-/* ── PREVIEW PANEL (step finale) ── */
-.preview-info {
-  background: var(--panel2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 20px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 2;
-}
-.preview-info strong { color: var(--text); }
-
-/* ── GENERATED SHEET (apre nuova finestra) ── */
-.gen-actions { display: flex; gap: 12px; }
+:root{--bg:#0d0d10;--panel:#141418;--p2:#1a1a20;--brd:#252530;--acc:#7c9a92;--acc2:#c4a882;--grn:#5a9e7a;--txt:#e0e0e8;--mut:#5a5a6a;--ff:'DM Sans',sans-serif;--fm:'DM Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:var(--ff);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:11px 24px;border-bottom:1px solid var(--brd);background:var(--panel);flex-shrink:0}
+.brand{font-family:var(--fm);font-size:11px;color:var(--acc);letter-spacing:2px;text-transform:uppercase}
+.steplbl{font-family:var(--fm);font-size:10px;color:var(--mut)}
+.pgbar{height:2px;background:var(--brd);flex-shrink:0}
+.pgfill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .4s}
+.main{flex:1;display:grid;grid-template-columns:250px 1fr;overflow:hidden}
+.sidenav{background:var(--panel);border-right:1px solid var(--brd);padding:18px 0;overflow-y:auto}
+.ng{padding:0 14px;margin-bottom:18px}
+.ngl{font-family:var(--fm);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mut);margin-bottom:7px;display:block}
+.ni{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:5px;cursor:pointer;font-size:12px;color:var(--mut);transition:all .12s;margin-bottom:1px;border:1px solid transparent}
+.ni:hover{background:var(--p2);color:var(--txt)}
+.ni.on{background:var(--p2);color:var(--txt);border-color:var(--brd)}
+.ni.done .dot{background:var(--grn)}
+.ni.on .dot{background:var(--acc);box-shadow:0 0 6px var(--acc)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--brd);flex-shrink:0;transition:all .2s}
+.nn{font-family:var(--fm);font-size:9px;color:var(--mut);margin-left:auto}
+.content{overflow-y:auto;padding:32px 40px;display:flex;flex-direction:column}
+.step{display:none;flex-direction:column;gap:20px}
+.step.on{display:flex}
+.sh{margin-bottom:2px}
+.sn{font-family:var(--fm);font-size:10px;color:var(--acc);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
+.st{font-size:21px;font-weight:600;line-height:1.2}
+.sd{font-size:12px;color:var(--mut);margin-top:3px;line-height:1.6}
+.card{background:var(--panel);border:1px solid var(--brd);border-radius:8px;padding:18px}
+.ct{font-size:11px;font-weight:600;color:var(--txt);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.ct::before{content:'';display:block;width:3px;height:13px;background:var(--acc);border-radius:2px;flex-shrink:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.gc{grid-column:1/-1}
+.fi{display:flex;flex-direction:column;gap:4px}
+.fi label{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--mut)}
+.fi input,.fi textarea,.fi select{background:var(--p2);border:1px solid var(--brd);border-radius:5px;color:var(--txt);font-family:var(--ff);font-size:12px;padding:8px 11px;outline:none;transition:border-color .12s;resize:vertical;width:100%}
+.fi input:focus,.fi textarea:focus,.fi select:focus{border-color:var(--acc)}
+.fi input::placeholder,.fi textarea::placeholder{color:#28283a}
+.fi select option{background:var(--p2)}
+.fi textarea{min-height:68px}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.fo{background:var(--p2);border:2px solid var(--brd);border-radius:6px;padding:11px 9px;cursor:pointer;transition:all .12s;text-align:center}
+.fo:hover{border-color:var(--mut)}
+.fo.sel{border-color:var(--acc);background:rgba(124,154,146,.07)}
+.fsamp{font-size:15px;font-weight:600;color:var(--txt);line-height:1}
+.fname{font-size:9px;color:var(--mut);letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.pc{background:var(--p2);border:2px solid var(--brd);border-radius:6px;padding:9px;cursor:pointer;transition:all .12s}
+.pc:hover{border-color:var(--mut);transform:translateY(-1px)}
+.pc.sel{border-color:var(--acc)}
+.psw{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;height:30px;border-radius:3px;overflow:hidden;margin-bottom:6px}
+.psw div{border-radius:1px}
+.pn{font-size:10px;font-weight:600;color:var(--txt)}
+.pd{font-size:9px;color:var(--mut);margin-top:1px;line-height:1.3}
+.crow{display:flex;gap:10px;flex-wrap:wrap}
+.cf{display:flex;flex-direction:column;gap:4px;align-items:center}
+.cf label{font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
+.cf input[type=color]{width:42px;height:42px;border-radius:6px;border:2px solid var(--brd);padding:2px;background:var(--p2);cursor:pointer}
+.clist{display:flex;flex-direction:column;gap:7px}
+.cb{background:var(--p2);border:1px solid var(--brd);border-radius:6px;padding:12px;display:grid;grid-template-columns:60px 1fr auto;gap:9px;align-items:start}
+.ctag{background:var(--acc);color:#fff;font-family:var(--fm);font-size:10px;padding:4px 7px;border-radius:3px;text-align:center}
+.ci{display:flex;flex-direction:column;gap:6px}
+.ci input{background:var(--bg);border:1px solid var(--brd);border-radius:4px;padding:6px 9px;color:var(--txt);font-family:var(--ff);font-size:11px;outline:none;width:100%}
+.ci input:focus{border-color:var(--acc)}
+.crm{background:none;border:1px solid var(--brd);color:var(--mut);cursor:pointer;padding:4px 8px;border-radius:4px;font-size:12px;transition:all .12s}
+.crm:hover{border-color:#c05050;color:#c05050}
+.ac{display:flex;align-items:center;gap:7px;padding:8px 11px;background:none;border:1px dashed var(--brd);border-radius:6px;color:var(--mut);font-family:var(--ff);font-size:12px;cursor:pointer;transition:all .12s;width:100%}
+.ac:hover{border-color:var(--acc);color:var(--acc)}
+.ugrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.uz{border:2px dashed var(--brd);border-radius:6px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .12s;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.uz:hover{border-color:var(--acc);background:rgba(124,154,146,.04)}
+.uz.ok{border-color:var(--grn);background:rgba(90,158,122,.05)}
+.uz input{display:none}
+.ubadge{font-size:10px;font-weight:700;color:#fff;padding:2px 7px;border-radius:3px;margin-bottom:3px}
+.uname{font-size:10px;font-weight:600;color:var(--txt)}
+.uhint{font-size:9px;color:var(--mut);line-height:1.4}
+.uprev{width:100%;max-height:55px;object-fit:cover;border-radius:3px}
+.ufname{font-size:9px;color:var(--grn);word-break:break-all;margin-top:1px}
+.lgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.lz{border:2px dashed var(--brd);border-radius:6px;padding:12px 7px;text-align:center;cursor:pointer;transition:all .12s;min-height:75px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.lz:hover{border-color:var(--acc2);background:rgba(196,168,130,.04)}
+.lz.ok{border-color:var(--acc2)}
+.lz input{display:none}
+.lprev{max-width:65px;max-height:36px;object-fit:contain}
+.mapwrap{background:var(--bg);border-radius:6px;border:1px solid var(--brd);padding:8px}
+/* tooltip mappa */
+.map-tooltip{position:absolute;background:#1a1a20;border:1px solid #3a3a50;border-radius:4px;padding:4px 8px;font-size:10px;color:#e0e0e8;font-family:'DM Mono',monospace;pointer-events:none;z-index:999;white-space:nowrap;display:none}
+.snav{display:flex;justify-content:space-between;align-items:center;padding-top:18px;border-top:1px solid var(--brd);margin-top:2px}
+.btn{padding:8px 18px;border-radius:5px;font-family:var(--ff);font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all .12s}
+.bgh{background:none;border:1px solid var(--brd);color:var(--mut)}
+.bgh:hover{border-color:var(--txt);color:var(--txt)}
+.bpr{background:var(--acc);color:#fff}
+.bpr:hover{background:#8daca4}
+.bge{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-size:13px;padding:10px 26px}
+.bge:hover{opacity:.9;transform:translateY(-1px)}
+.sumbox{background:var(--p2);border:1px solid var(--brd);border-radius:6px;padding:16px;font-family:var(--fm);font-size:11px;color:var(--mut);line-height:2.2}
+.sumbox strong{color:var(--txt)}
 </style>
 </head>
 <body>
-
 <div class="topbar">
-  <div class="topbar-brand">⬡ Tavola A3 · Compositore Gara</div>
-  <div class="topbar-step" id="topStepLabel">Passo 1 di 7</div>
+  <div class="brand">⬡ Tavola A3 · Compositore</div>
+  <div class="steplbl" id="topLabel">Passo 1 di 7</div>
 </div>
-<div class="progress-bar">
-  <div class="progress-fill" id="progressFill" style="width: 14%"></div>
-</div>
-
+<div class="pgbar"><div class="pgfill" id="pgf" style="width:14%"></div></div>
 <div class="main">
+<nav class="sidenav">
+  <div class="ng"><span class="ngl">Contenuto</span>
+    <div class="ni on" data-s="1"><div class="dot"></div>Dati gara<span class="nn">01</span></div>
+    <div class="ni" data-s="2"><div class="dot"></div>Testi<span class="nn">02</span></div>
+    <div class="ni" data-s="3"><div class="dot"></div>Criteri tecnici<span class="nn">03</span></div>
+  </div>
+  <div class="ng"><span class="ngl">Design</span>
+    <div class="ni" data-s="4"><div class="dot"></div>Font<span class="nn">04</span></div>
+    <div class="ni" data-s="5"><div class="dot"></div>Colori e layout<span class="nn">05</span></div>
+    <div class="ni" data-s="6"><div class="dot"></div>Loghi e immagini<span class="nn">06</span></div>
+  </div>
+  <div class="ng"><span class="ngl">Output</span>
+    <div class="ni" data-s="7"><div class="dot"></div>Genera tavola<span class="nn">07</span></div>
+  </div>
+</nav>
+<div class="content">
 
-  <!-- ── SIDEBAR NAV ── -->
-  <nav class="sidenav">
-    <div class="sidenav-section">
-      <div class="sidenav-section-label">Configurazione</div>
-      <div class="nav-item active" data-step="1"><div class="nav-dot"></div>Dati gara<span class="nav-num">01</span></div>
-      <div class="nav-item" data-step="2"><div class="nav-dot"></div>Testi e contenuti<span class="nav-num">02</span></div>
-      <div class="nav-item" data-step="3"><div class="nav-dot"></div>Criteri tecnici<span class="nav-num">03</span></div>
+<!-- S1 -->
+<div class="step on" id="s1">
+  <div class="sh"><div class="sn">Passo 01</div><div class="st">Dati della gara</div><div class="sd">Informazioni identificative del progetto e della stazione appaltante.</div></div>
+  <div class="card"><div class="ct">Progetto</div>
+    <div class="g2">
+      <div class="fi gc"><label>Titolo progetto</label><input id="progettoTitolo" placeholder="es. Auditorium San Martino · Fermo"></div>
+      <div class="fi gc"><label>Sottotitolo</label><input id="progettoSottotitolo" placeholder="es. Restauro e riqualificazione funzionale dell'ex convento"></div>
+      <div class="fi"><label>Tipo elaborato / Criterio</label><input id="tipoElaborato" placeholder="es. Relazione Migliorativa · Criterio A"></div>
+      <div class="fi"><label>Numero tavola</label><input id="numTavola" placeholder="es. A-01"></div>
     </div>
-    <div class="sidenav-section">
-      <div class="sidenav-section-label">Design</div>
-      <div class="nav-item" data-step="4"><div class="nav-dot"></div>Font<span class="nav-num">04</span></div>
-      <div class="nav-item" data-step="5"><div class="nav-dot"></div>Colori e layout<span class="nav-num">05</span></div>
-      <div class="nav-item" data-step="6"><div class="nav-dot"></div>Loghi e immagini<span class="nav-num">06</span></div>
+  </div>
+  <div class="card"><div class="ct">Stazione appaltante</div>
+    <div class="g2">
+      <div class="fi"><label>Ente</label><input id="enteNome" placeholder="es. Comune di Fermo"></div>
+      <div class="fi"><label>Indirizzo</label><input id="enteIndirizzo" placeholder="es. Piazza del Popolo 1, 63900 Fermo FM"></div>
+      <div class="fi"><label>CIG</label><input id="cig" placeholder="es. A0123456789"></div>
+      <div class="fi"><label>Importo base gara</label><input id="importo" placeholder="es. € 2.450.000,00"></div>
+      <div class="fi"><label>Normativa</label><select id="normativa"><option>D.Lgs. 36/2023</option><option>D.Lgs. 50/2016</option></select></div>
+      <div class="fi"><label>Data elaborazione</label><input id="dataElab" placeholder="es. Aprile 2026"></div>
     </div>
-    <div class="sidenav-section">
-      <div class="sidenav-section-label">Output</div>
-      <div class="nav-item" data-step="7"><div class="nav-dot"></div>Genera tavola<span class="nav-num">07</span></div>
+  </div>
+  <div class="card"><div class="ct">RTP</div>
+    <div class="g2">
+      <div class="fi"><label>Mandataria</label><input id="rtpMandataria" placeholder="es. Studio Tecnico SCS Srl"></div>
+      <div class="fi"><label>Città</label><input id="rtpCitta" placeholder="es. Recanati (MC)"></div>
+      <div class="fi gc"><label>Mandanti (separati da virgola)</label><input id="rtpMandanti" placeholder="es. Dida Studio, RP Studio, Fabulism GbR"></div>
+      <div class="fi"><label>Responsabile / DL</label><input id="dlNome" placeholder="es. Ing. Francesco Rossi"></div>
+      <div class="fi"><label>N° ordine</label><input id="dlOrdine" placeholder="es. Ord. Ing. Macerata n° A1407"></div>
     </div>
-  </nav>
+  </div>
+  <div class="snav"><div></div><button class="btn bpr" onclick="goStep(2)">Avanti →</button></div>
+</div>
 
-  <!-- ── CONTENT ── -->
-  <div class="content">
-
-    <!-- ══ STEP 1: DATI GARA ══ -->
-    <div class="step-panel active" id="step1">
-      <div class="step-header">
-        <div class="step-number">Passo 01</div>
-        <div class="step-title">Dati della gara</div>
-        <div class="step-desc">Informazioni identificative del progetto e della stazione appaltante.</div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Progetto</div>
-        <div class="form-grid">
-          <div class="field form-full">
-            <label>Titolo del progetto</label>
-            <input type="text" id="progettoTitolo" placeholder="es. Auditorium San Martino · Fermo">
-          </div>
-          <div class="field form-full">
-            <label>Sottotitolo / Descrizione breve</label>
-            <input type="text" id="progettoSottotitolo" placeholder="es. Restauro e riqualificazione funzionale dell'ex convento">
-          </div>
-          <div class="field">
-            <label>Tipo elaborato / Criterio</label>
-            <input type="text" id="tipoElaborato" placeholder="es. Relazione Migliorativa · Criterio A">
-          </div>
-          <div class="field">
-            <label>Numero tavola</label>
-            <input type="text" id="numTavola" placeholder="es. A-01">
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Stazione appaltante</div>
-        <div class="form-grid">
-          <div class="field">
-            <label>Ente</label>
-            <input type="text" id="enteNome" placeholder="es. Comune di Fermo">
-          </div>
-          <div class="field">
-            <label>Indirizzo</label>
-            <input type="text" id="enteIndirizzo" placeholder="es. Piazza del Popolo 1, 63900 Fermo FM">
-          </div>
-          <div class="field">
-            <label>CIG</label>
-            <input type="text" id="cig" placeholder="es. A0123456789">
-          </div>
-          <div class="field">
-            <label>Importo a base di gara</label>
-            <input type="text" id="importo" placeholder="es. € 2.450.000,00">
-          </div>
-          <div class="field">
-            <label>Riferimento normativo</label>
-            <select id="normativa">
-              <option value="D.Lgs. 36/2023">D.Lgs. 36/2023</option>
-              <option value="D.Lgs. 50/2016">D.Lgs. 50/2016</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Data elaborazione</label>
-            <input type="text" id="dataElab" placeholder="es. Aprile 2026">
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">RTP</div>
-        <div class="form-grid">
-          <div class="field">
-            <label>Mandataria (Studio)</label>
-            <input type="text" id="rtpMandataria" placeholder="es. Studio Tecnico SCS Srl">
-          </div>
-          <div class="field">
-            <label>Città mandataria</label>
-            <input type="text" id="rtpCitta" placeholder="es. Recanati (MC)">
-          </div>
-          <div class="field form-full">
-            <label>Mandanti / Partner RTP (separati da virgola)</label>
-            <input type="text" id="rtpMandanti" placeholder="es. Dida Studio, RP Studio, Fabulism GbR, Polo Progetti Soc. Coop.">
-          </div>
-          <div class="field">
-            <label>Responsabile / DL</label>
-            <input type="text" id="dlNome" placeholder="es. Ing. Francesco Rossi">
-          </div>
-          <div class="field">
-            <label>N° iscrizione ordine</label>
-            <input type="text" id="dlOrdine" placeholder="es. Ord. Ing. Macerata n° A1407">
-          </div>
-        </div>
-      </div>
-
-      <div class="step-nav">
-        <div></div>
-        <button class="btn btn-primary" onclick="goStep(2)">Avanti →</button>
-      </div>
+<!-- S2 -->
+<div class="step" id="s2">
+  <div class="sh"><div class="sn">Passo 02</div><div class="st">Testi e contenuti</div><div class="sd">Testi delle sezioni della tavola.</div></div>
+  <div class="card"><div class="ct">Sezione 1 — in alto a sinistra</div>
+    <div class="g2">
+      <div class="fi gc"><label>Titolo</label><input id="sec1Titolo" placeholder="es. Contesto Storico e Culturale"></div>
+      <div class="fi gc"><label>Testo</label><textarea id="sec1Testo" placeholder="Descrizione del contesto, storia, valore architettonico..."></textarea></div>
     </div>
-
-    <!-- ══ STEP 2: TESTI ══ -->
-    <div class="step-panel" id="step2">
-      <div class="step-header">
-        <div class="step-number">Passo 02</div>
-        <div class="step-title">Testi e contenuti</div>
-        <div class="step-desc">Inserisci i testi che compariranno nelle sezioni principali della tavola.</div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Sezione principale — Testo descrittivo</div>
-        <div class="form-grid">
-          <div class="field form-full">
-            <label>Titolo sezione 1</label>
-            <input type="text" id="sec1Titolo" placeholder="es. Contesto Storico e Culturale">
-          </div>
-          <div class="field form-full">
-            <label>Testo sezione 1</label>
-            <textarea id="sec1Testo" placeholder="Descrizione del contesto, storia, valore architettonico..."></textarea>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Sezione 2 — Strategia / Proposta</div>
-        <div class="form-grid">
-          <div class="field form-full">
-            <label>Titolo sezione 2</label>
-            <input type="text" id="sec2Titolo" placeholder="es. Strategia di Intervento">
-          </div>
-          <div class="field form-full">
-            <label>Testo sezione 2</label>
-            <textarea id="sec2Testo" placeholder="Descrizione della proposta tecnica, approccio metodologico..."></textarea>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Dati numerici (3 riquadri)</div>
-        <div class="form-grid-3">
-          <div class="field">
-            <label>Dato 1 — Etichetta</label>
-            <input type="text" id="d1Label" placeholder="es. Superficie lorda">
-          </div>
-          <div class="field">
-            <label>Dato 1 — Valore</label>
-            <input type="text" id="d1Val" placeholder="es. 1.240">
-          </div>
-          <div class="field">
-            <label>Dato 1 — Unità</label>
-            <input type="text" id="d1Unit" placeholder="es. m²">
-          </div>
-          <div class="field">
-            <label>Dato 2 — Etichetta</label>
-            <input type="text" id="d2Label" placeholder="es. Posti a sedere">
-          </div>
-          <div class="field">
-            <label>Dato 2 — Valore</label>
-            <input type="text" id="d2Val" placeholder="es. 320">
-          </div>
-          <div class="field">
-            <label>Dato 2 — Unità</label>
-            <input type="text" id="d2Unit" placeholder="es. posti">
-          </div>
-          <div class="field">
-            <label>Dato 3 — Etichetta</label>
-            <input type="text" id="d3Label" placeholder="es. Durata lavori">
-          </div>
-          <div class="field">
-            <label>Dato 3 — Valore</label>
-            <input type="text" id="d3Val" placeholder="es. 18">
-          </div>
-          <div class="field">
-            <label>Dato 3 — Unità</label>
-            <input type="text" id="d3Unit" placeholder="es. mesi">
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Testo note a piè di tavola</div>
-        <div class="field">
-          <label>Footer note aggiuntive</label>
-          <input type="text" id="footerNote" placeholder="es. Elaborato riservato alla procedura di gara">
-        </div>
-      </div>
-
-      <div class="step-nav">
-        <button class="btn btn-ghost" onclick="goStep(1)">← Indietro</button>
-        <button class="btn btn-primary" onclick="goStep(3)">Avanti →</button>
-      </div>
+  </div>
+  <div class="card"><div class="ct">Sezione 2 — in basso a sinistra (con criteri)</div>
+    <div class="g2">
+      <div class="fi gc"><label>Titolo</label><input id="sec2Titolo" placeholder="es. Strategia di Intervento"></div>
     </div>
-
-    <!-- ══ STEP 3: CRITERI ══ -->
-    <div class="step-panel" id="step3">
-      <div class="step-header">
-        <div class="step-number">Passo 03</div>
-        <div class="step-title">Criteri tecnici</div>
-        <div class="step-desc">Aggiungi i punti tecnici che verranno mostrati nella griglia criteri della tavola.</div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Lista criteri / punti migliorativi</div>
-        <div class="criteria-list-edit" id="criteriaContainer">
-          <!-- Criteri aggiunti dinamicamente -->
-        </div>
-        <button class="add-criterio" onclick="addCriterio()" style="margin-top:12px">
-          + Aggiungi criterio
-        </button>
-      </div>
-
-      <div class="step-nav">
-        <button class="btn btn-ghost" onclick="goStep(2)">← Indietro</button>
-        <button class="btn btn-primary" onclick="goStep(4)">Avanti →</button>
-      </div>
+  </div>
+  <div class="card"><div class="ct">Dati numerici (3 box scuri a destra)</div>
+    <div class="g3">
+      <div class="fi"><label>Etichetta 1</label><input id="d1Label" placeholder="es. Superficie lorda"></div>
+      <div class="fi"><label>Valore 1</label><input id="d1Val" placeholder="es. 1.240"></div>
+      <div class="fi"><label>Unità 1</label><input id="d1Unit" placeholder="es. m²"></div>
+      <div class="fi"><label>Etichetta 2</label><input id="d2Label" placeholder="es. Posti a sedere"></div>
+      <div class="fi"><label>Valore 2</label><input id="d2Val" placeholder="es. 320"></div>
+      <div class="fi"><label>Unità 2</label><input id="d2Unit" placeholder="es. posti"></div>
+      <div class="fi"><label>Etichetta 3</label><input id="d3Label" placeholder="es. Durata lavori"></div>
+      <div class="fi"><label>Valore 3</label><input id="d3Val" placeholder="es. 18"></div>
+      <div class="fi"><label>Unità 3</label><input id="d3Unit" placeholder="es. mesi"></div>
     </div>
+  </div>
+  <div class="card"><div class="ct">Footer</div>
+    <div class="fi"><label>Note footer</label><input id="footerNote" placeholder="es. Elaborato riservato alla procedura di gara"></div>
+  </div>
+  <div class="snav"><button class="btn bgh" onclick="goStep(1)">← Indietro</button><button class="btn bpr" onclick="goStep(3)">Avanti →</button></div>
+</div>
 
-    <!-- ══ STEP 4: FONT ══ -->
-    <div class="step-panel" id="step4">
-      <div class="step-header">
-        <div class="step-number">Passo 04</div>
-        <div class="step-title">Tipografia</div>
-        <div class="step-desc">Scegli la coppia di font per titoli e corpo testo della tavola.</div>
-      </div>
+<!-- S3 -->
+<div class="step" id="s3">
+  <div class="sh"><div class="sn">Passo 03</div><div class="st">Criteri tecnici</div><div class="sd">Appaiono nella cella in basso a sinistra insieme alla sezione 2.</div></div>
+  <div class="card"><div class="ct">Lista criteri</div>
+    <div class="clist" id="critList"></div>
+    <button class="ac" onclick="addCrit()" style="margin-top:9px">+ Aggiungi criterio</button>
+  </div>
+  <div class="snav"><button class="btn bgh" onclick="goStep(2)">← Indietro</button><button class="btn bpr" onclick="goStep(4)">Avanti →</button></div>
+</div>
 
-      <div class="section-card">
-        <div class="section-card-title">Font titoli (Display)</div>
-        <div class="font-grid" id="fontHeadGrid">
-          <div class="font-option selected" data-font="'Barlow Condensed', sans-serif" data-gfont="Barlow+Condensed:wght@700" onclick="selectFont('head', this)">
-            <div class="font-sample" style="font-family:'Barlow Condensed',sans-serif;font-weight:700">TITOLO A3</div>
-            <div class="font-name">Barlow Condensed</div>
-          </div>
-          <div class="font-option" data-font="'Oswald', sans-serif" data-gfont="Oswald:wght@600" onclick="selectFont('head', this)">
-            <div class="font-sample" style="font-family:'Oswald',sans-serif;font-weight:600">TITOLO A3</div>
-            <div class="font-name">Oswald</div>
-          </div>
-          <div class="font-option" data-font="'Bebas Neue', sans-serif" data-gfont="Bebas+Neue" onclick="selectFont('head', this)">
-            <div class="font-sample" style="font-family:'Bebas Neue',sans-serif">TITOLO A3</div>
-            <div class="font-name">Bebas Neue</div>
-          </div>
-          <div class="font-option" data-font="'Playfair Display', serif" data-gfont="Playfair+Display:wght@700" onclick="selectFont('head', this)">
-            <div class="font-sample" style="font-family:'Playfair Display',serif;font-weight:700">Titolo A3</div>
-            <div class="font-name">Playfair Display</div>
-          </div>
-          <div class="font-option" data-font="'Cormorant Garamond', serif" data-gfont="Cormorant+Garamond:wght@700" onclick="selectFont('head', this)">
-            <div class="font-sample" style="font-family:'Cormorant Garamond',serif;font-weight:700">Titolo A3</div>
-            <div class="font-name">Cormorant Garamond</div>
-          </div>
-          <div class="font-option" data-font="'DM Serif Display', serif" data-gfont="DM+Serif+Display" onclick="selectFont('head', this)">
-            <div class="font-sample" style="font-family:'DM Serif Display',serif">Titolo A3</div>
-            <div class="font-name">DM Serif Display</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Font corpo testo</div>
-        <div class="font-grid" id="fontBodyGrid">
-          <div class="font-option selected" data-font="'Barlow', sans-serif" data-gfont="Barlow:wght@300;400;500" onclick="selectFont('body', this)">
-            <div class="font-sample" style="font-family:'Barlow',sans-serif;font-weight:400;font-size:14px">Il progetto prevede interventi di consolidamento strutturale.</div>
-            <div class="font-name">Barlow</div>
-          </div>
-          <div class="font-option" data-font="'Source Sans 3', sans-serif" data-gfont="Source+Sans+3:wght@300;400" onclick="selectFont('body', this)">
-            <div class="font-sample" style="font-family:'Source Sans 3',sans-serif;font-weight:400;font-size:14px">Il progetto prevede interventi di consolidamento strutturale.</div>
-            <div class="font-name">Source Sans 3</div>
-          </div>
-          <div class="font-option" data-font="'Lato', sans-serif" data-gfont="Lato:wght@300;400" onclick="selectFont('body', this)">
-            <div class="font-sample" style="font-family:'Lato',sans-serif;font-weight:300;font-size:14px">Il progetto prevede interventi di consolidamento strutturale.</div>
-            <div class="font-name">Lato Light</div>
-          </div>
-          <div class="font-option" data-font="'Libre Baskerville', serif" data-gfont="Libre+Baskerville:wght@400" onclick="selectFont('body', this)">
-            <div class="font-sample" style="font-family:'Libre Baskerville',serif;font-weight:400;font-size:13px">Il progetto prevede interventi di consolidamento.</div>
-            <div class="font-name">Libre Baskerville</div>
-          </div>
-          <div class="font-option" data-font="'Nunito Sans', sans-serif" data-gfont="Nunito+Sans:wght@300;400" onclick="selectFont('body', this)">
-            <div class="font-sample" style="font-family:'Nunito Sans',sans-serif;font-weight:300;font-size:14px">Il progetto prevede interventi di consolidamento strutturale.</div>
-            <div class="font-name">Nunito Sans</div>
-          </div>
-          <div class="font-option" data-font="'IBM Plex Sans', sans-serif" data-gfont="IBM+Plex+Sans:wght@300;400" onclick="selectFont('body', this)">
-            <div class="font-sample" style="font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:14px">Il progetto prevede interventi di consolidamento strutturale.</div>
-            <div class="font-name">IBM Plex Sans</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="step-nav">
-        <button class="btn btn-ghost" onclick="goStep(3)">← Indietro</button>
-        <button class="btn btn-primary" onclick="goStep(5)">Avanti →</button>
-      </div>
+<!-- S4 -->
+<div class="step" id="s4">
+  <div class="sh"><div class="sn">Passo 04</div><div class="st">Tipografia</div><div class="sd">Font per titoli e corpo testo della tavola.</div></div>
+  <div class="card"><div class="ct">Font titoli</div>
+    <div class="fgrid" id="fhGrid">
+      <div class="fo sel" data-fh="'Barlow Condensed',sans-serif" data-gfh="Barlow+Condensed:wght@700" onclick="selFont('h',this)"><div class="fsamp" style="font-family:'Barlow Condensed',sans-serif;font-weight:700">TITOLO A3</div><div class="fname">Barlow Condensed</div></div>
+      <div class="fo" data-fh="'Oswald',sans-serif" data-gfh="Oswald:wght@600" onclick="selFont('h',this)"><div class="fsamp" style="font-family:'Oswald',sans-serif;font-weight:600">TITOLO A3</div><div class="fname">Oswald</div></div>
+      <div class="fo" data-fh="'Bebas Neue',sans-serif" data-gfh="Bebas+Neue" onclick="selFont('h',this)"><div class="fsamp" style="font-family:'Bebas Neue',sans-serif">TITOLO A3</div><div class="fname">Bebas Neue</div></div>
+      <div class="fo" data-fh="'Playfair Display',serif" data-gfh="Playfair+Display:wght@700" onclick="selFont('h',this)"><div class="fsamp" style="font-family:'Playfair Display',serif;font-weight:700">Titolo A3</div><div class="fname">Playfair Display</div></div>
+      <div class="fo" data-fh="'Cormorant Garamond',serif" data-gfh="Cormorant+Garamond:wght@700" onclick="selFont('h',this)"><div class="fsamp" style="font-family:'Cormorant Garamond',serif;font-weight:700">Titolo A3</div><div class="fname">Cormorant Garamond</div></div>
+      <div class="fo" data-fh="'DM Serif Display',serif" data-gfh="DM+Serif+Display" onclick="selFont('h',this)"><div class="fsamp" style="font-family:'DM Serif Display',serif">Titolo A3</div><div class="fname">DM Serif Display</div></div>
     </div>
-
-    <!-- ══ STEP 5: COLORI & LAYOUT ══ -->
-    <div class="step-panel" id="step5">
-      <div class="step-header">
-        <div class="step-number">Passo 05</div>
-        <div class="step-title">Colori e layout</div>
-        <div class="step-desc">Definisci la palette cromatica e scegli la struttura compositiva della tavola.</div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Palette colori</div>
-        <div class="color-row">
-          <div class="color-field">
-            <label>Primario</label>
-            <input type="color" id="colorPrimary" value="#1a1a2e">
-          </div>
-          <div class="color-field">
-            <label>Accento</label>
-            <input type="color" id="colorAccent" value="#e8380d">
-          </div>
-          <div class="color-field">
-            <label>Sfondo carta</label>
-            <input type="color" id="colorBg" value="#f5f0e8">
-          </div>
-          <div class="color-field">
-            <label>Testo corpo</label>
-            <input type="color" id="colorText" value="#4a4a5a">
-          </div>
-          <div class="color-field">
-            <label>Card chiara</label>
-            <input type="color" id="colorCard" value="#ffffff">
-          </div>
-          <div class="color-field">
-            <label>Card scura</label>
-            <input type="color" id="colorCardDark" value="#1a1a2e">
-          </div>
-        </div>
-
-        <div style="margin-top: 20px;">
-          <div class="section-card-title" style="font-size:11px;margin-bottom:10px;">Preset palette rapidi</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn btn-ghost" style="font-size:11px;padding:6px 12px;" onclick="applyPalette('#1a1a2e','#e8380d','#f5f0e8','#4a4a5a')">🔵 Classico</button>
-            <button class="btn btn-ghost" style="font-size:11px;padding:6px 12px;" onclick="applyPalette('#0d2137','#c8a55a','#f8f6f0','#3a3a4a')">🟡 Istituzionale</button>
-            <button class="btn btn-ghost" style="font-size:11px;padding:6px 12px;" onclick="applyPalette('#1c3d2e','#4caf87','#f2f7f4','#2e4a3a')">🟢 Verde natura</button>
-            <button class="btn btn-ghost" style="font-size:11px;padding:6px 12px;" onclick="applyPalette('#2d1b4e','#9b59b6','#f8f5ff','#3d2b5e')">🟣 Contemporaneo</button>
-            <button class="btn btn-ghost" style="font-size:11px;padding:6px 12px;" onclick="applyPalette('#1a1a1a','#ff3333','#f8f8f8','#444444')">⚫ Minimal</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Layout tavola</div>
-        <div class="layout-grid">
-
-          <div class="layout-option selected" data-layout="classico" onclick="selectLayout(this)">
-            <div class="layout-thumb" style="grid-template-rows: 18% 1fr 1fr 12%; grid-template-columns: 1fr 1fr 1fr;">
-              <div class="lt-cell" style="grid-column:1/3"></div>
-              <div class="lt-cell" style="background:#555;grid-row:1/5;grid-column:3"></div>
-              <div class="lt-cell"></div><div class="lt-cell"></div>
-              <div class="lt-cell"></div><div class="lt-cell"></div>
-              <div class="lt-cell" style="grid-column:1/3;background:#333"></div>
-            </div>
-            <div class="layout-name">Classico 3 col</div>
-            <div class="layout-desc">Header · Grid 3 colonne · Sidebar destra · Footer</div>
-          </div>
-
-          <div class="layout-option" data-layout="rivista" onclick="selectLayout(this)">
-            <div class="layout-thumb" style="grid-template-rows: 22% 1fr 1fr 10%; grid-template-columns: 1fr 1fr;">
-              <div class="lt-cell" style="grid-column:1/3;background:#555"></div>
-              <div class="lt-cell" style="grid-row:2/4"></div>
-              <div class="lt-cell"></div>
-              <div class="lt-cell" style="background:#333"></div>
-              <div class="lt-cell" style="grid-column:1/3;background:#222"></div>
-            </div>
-            <div class="layout-name">Rivista 2 col</div>
-            <div class="layout-desc">Banner header · 2 colonne asimmetriche · Footer</div>
-          </div>
-
-          <div class="layout-option" data-layout="editoriale" onclick="selectLayout(this)">
-            <div class="layout-thumb" style="grid-template-rows: 30% 1fr 1fr 10%; grid-template-columns: 2fr 1fr 1fr;">
-              <div class="lt-cell" style="grid-column:1/4;background:#555"></div>
-              <div class="lt-cell" style="grid-row:2/4"></div>
-              <div class="lt-cell"></div><div class="lt-cell"></div>
-              <div class="lt-cell" style="background:#333"></div><div class="lt-cell"></div>
-              <div class="lt-cell" style="grid-column:1/4;background:#222"></div>
-            </div>
-            <div class="layout-name">Editoriale</div>
-            <div class="layout-desc">Hero image grande · Colonna testo · Dati</div>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="step-nav">
-        <button class="btn btn-ghost" onclick="goStep(4)">← Indietro</button>
-        <button class="btn btn-primary" onclick="goStep(6)">Avanti →</button>
-      </div>
+  </div>
+  <div class="card"><div class="ct">Font corpo testo</div>
+    <div class="fgrid" id="fbGrid">
+      <div class="fo sel" data-fb="'Barlow',sans-serif" data-gfb="Barlow:wght@300;400;500" onclick="selFont('b',this)"><div class="fsamp" style="font-family:'Barlow',sans-serif;font-size:12px;font-weight:400">Testo descrittivo del progetto.</div><div class="fname">Barlow</div></div>
+      <div class="fo" data-fb="'Source Sans 3',sans-serif" data-gfb="Source+Sans+3:wght@300;400" onclick="selFont('b',this)"><div class="fsamp" style="font-family:'Source Sans 3',sans-serif;font-size:12px">Testo descrittivo del progetto.</div><div class="fname">Source Sans 3</div></div>
+      <div class="fo" data-fb="'Lato',sans-serif" data-gfb="Lato:wght@300;400" onclick="selFont('b',this)"><div class="fsamp" style="font-family:'Lato',sans-serif;font-size:12px;font-weight:300">Testo descrittivo del progetto.</div><div class="fname">Lato Light</div></div>
+      <div class="fo" data-fb="'Libre Baskerville',serif" data-gfb="Libre+Baskerville:wght@400" onclick="selFont('b',this)"><div class="fsamp" style="font-family:'Libre Baskerville',serif;font-size:11px">Testo descrittivo del progetto.</div><div class="fname">Libre Baskerville</div></div>
+      <div class="fo" data-fb="'Nunito Sans',sans-serif" data-gfb="Nunito+Sans:wght@300;400" onclick="selFont('b',this)"><div class="fsamp" style="font-family:'Nunito Sans',sans-serif;font-size:12px;font-weight:300">Testo descrittivo del progetto.</div><div class="fname">Nunito Sans</div></div>
+      <div class="fo" data-fb="'IBM Plex Sans',sans-serif" data-gfb="IBM+Plex+Sans:wght@300;400" onclick="selFont('b',this)"><div class="fsamp" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:300">Testo descrittivo del progetto.</div><div class="fname">IBM Plex Sans</div></div>
     </div>
+  </div>
+  <div class="snav"><button class="btn bgh" onclick="goStep(3)">← Indietro</button><button class="btn bpr" onclick="goStep(5)">Avanti →</button></div>
+</div>
 
-    <!-- ══ STEP 6: LOGHI & IMMAGINI ══ -->
-    <div class="step-panel" id="step6">
-      <div class="step-header">
-        <div class="step-number">Passo 06</div>
-        <div class="step-title">Loghi e immagini</div>
-        <div class="step-desc">Carica i file che compariranno nella tavola. Formati supportati: PNG, JPG, SVG, WebP.</div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Loghi RTP (max 4)</div>
-        <div class="logo-grid">
-          <div class="logo-zone" id="logoZone1" onclick="triggerLogoUpload(1)">
-            <input type="file" id="logoFile1" accept="image/*" onchange="handleLogo(1, this)">
-            <div class="upload-icon">🏛️</div>
-            <div class="upload-slot-name">Logo Mandataria</div>
-            <div class="upload-label">Clicca per caricare</div>
-          </div>
-          <div class="logo-zone" id="logoZone2" onclick="triggerLogoUpload(2)">
-            <input type="file" id="logoFile2" accept="image/*" onchange="handleLogo(2, this)">
-            <div class="upload-icon">🏢</div>
-            <div class="upload-slot-name">Partner 1</div>
-            <div class="upload-label">Clicca per caricare</div>
-          </div>
-          <div class="logo-zone" id="logoZone3" onclick="triggerLogoUpload(3)">
-            <input type="file" id="logoFile3" accept="image/*" onchange="handleLogo(3, this)">
-            <div class="upload-icon">🏢</div>
-            <div class="upload-slot-name">Partner 2</div>
-            <div class="upload-label">Clicca per caricare</div>
-          </div>
-          <div class="logo-zone" id="logoZone4" onclick="triggerLogoUpload(4)">
-            <input type="file" id="logoFile4" accept="image/*" onchange="handleLogo(4, this)">
-            <div class="upload-icon">🏢</div>
-            <div class="upload-slot-name">Partner 3</div>
-            <div class="upload-label">Opzionale</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Immagini di progetto</div>
-        <div class="upload-grid">
-          <div class="upload-zone" id="imgZone1" onclick="triggerImgUpload(1)">
-            <input type="file" id="imgFile1" accept="image/*" onchange="handleImg(1, this)">
-            <div class="upload-icon">🗺️</div>
-            <div class="upload-slot-name">Planimetria / Pianta</div>
-            <div class="upload-label">Clicca o trascina<br>PNG · JPG · SVG</div>
-          </div>
-          <div class="upload-zone" id="imgZone2" onclick="triggerImgUpload(2)">
-            <input type="file" id="imgFile2" accept="image/*" onchange="handleImg(2, this)">
-            <div class="upload-icon">🏗️</div>
-            <div class="upload-slot-name">Render / Vista 3D</div>
-            <div class="upload-label">Clicca o trascina<br>PNG · JPG · SVG</div>
-          </div>
-          <div class="upload-zone" id="imgZone3" onclick="triggerImgUpload(3)">
-            <input type="file" id="imgFile3" accept="image/*" onchange="handleImg(3, this)">
-            <div class="upload-icon">📐</div>
-            <div class="upload-slot-name">Sezione / Prospetto</div>
-            <div class="upload-label">Clicca o trascina<br>PNG · JPG · SVG</div>
-          </div>
-          <div class="upload-zone" id="imgZone4" onclick="triggerImgUpload(4)">
-            <input type="file" id="imgFile4" accept="image/*" onchange="handleImg(4, this)">
-            <div class="upload-icon">🖼️</div>
-            <div class="upload-slot-name">Immagine stato attuale</div>
-            <div class="upload-label">Clicca o trascina<br>PNG · JPG · SVG</div>
-          </div>
-          <div class="upload-zone" id="imgZone5" onclick="triggerImgUpload(5)">
-            <input type="file" id="imgFile5" accept="image/*" onchange="handleImg(5, this)">
-            <div class="upload-icon">📊</div>
-            <div class="upload-slot-name">Schema / Infografica</div>
-            <div class="upload-label">Clicca o trascina<br>PNG · JPG · SVG</div>
-          </div>
-          <div class="upload-zone" id="imgZone6" onclick="triggerImgUpload(6)">
-            <input type="file" id="imgFile6" accept="image/*" onchange="handleImg(6, this)">
-            <div class="upload-icon">🗾</div>
-            <div class="upload-slot-name">Inquadramento / CTR</div>
-            <div class="upload-label">Clicca o trascina<br>PNG · JPG · SVG</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="step-nav">
-        <button class="btn btn-ghost" onclick="goStep(5)">← Indietro</button>
-        <button class="btn btn-primary" onclick="goStep(7)">Avanti →</button>
-      </div>
+<!-- S5 -->
+<div class="step" id="s5">
+  <div class="sh"><div class="sn">Passo 05</div><div class="st">Colori e layout</div><div class="sd">Palette cromatica elegante.</div></div>
+  <div class="card"><div class="ct">Palette colori</div>
+    <div class="crow" style="margin-bottom:14px">
+      <div class="cf"><label>Primario</label><input type="color" id="cPrimary" value="#2c3e50"></div>
+      <div class="cf"><label>Accento</label><input type="color" id="cAccent" value="#8a9e8c"></div>
+      <div class="cf"><label>Sfondo</label><input type="color" id="cBg" value="#f7f5f0"></div>
+      <div class="cf"><label>Testo</label><input type="color" id="cText" value="#4a4a4a"></div>
+      <div class="cf"><label>Card chiara</label><input type="color" id="cCard" value="#ffffff"></div>
+      <div class="cf"><label>Card scura</label><input type="color" id="cDark" value="#2c3e50"></div>
     </div>
-
-    <!-- ══ STEP 7: GENERA ══ -->
-    <div class="step-panel" id="step7">
-      <div class="step-header">
-        <div class="step-number">Passo 07</div>
-        <div class="step-title">Genera la tavola</div>
-        <div class="step-desc">Tutto pronto. La tavola A3 verrà aperta in una nuova finestra. Da lì puoi stamparla o esportarla come PDF.</div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Riepilogo configurazione</div>
-        <div class="preview-info" id="summaryBox">
-          Completa i passi precedenti per vedere il riepilogo.
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">Istruzioni stampa / PDF</div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.8;">
-          1. Clicca <strong style="color:var(--text)">Genera Tavola A3</strong> → si apre nuova finestra<br>
-          2. Usa <strong style="color:var(--text)">Ctrl+P</strong> (o ⌘P su Mac)<br>
-          3. Seleziona: <strong style="color:var(--text)">Formato A3 · Orizzontale · Margini: Nessuno · Stampa sfondi</strong><br>
-          4. Salva come PDF o invia a stampante
-        </div>
-      </div>
-
-      <div class="step-nav">
-        <button class="btn btn-ghost" onclick="goStep(6)">← Indietro</button>
-        <button class="btn btn-generate" onclick="generateSheet()">⬡ Genera Tavola A3</button>
-      </div>
+    <div style="font-size:9px;color:var(--mut);letter-spacing:1px;text-transform:uppercase;margin-bottom:9px">Preset eleganti</div>
+    <div class="pgrid">
+      <div class="pc sel" onclick="applyPal(this,'#2c3e50','#8a9e8c','#f7f5f0','#4a4a4a','#ffffff','#2c3e50')"><div class="psw"><div style="background:#2c3e50"></div><div style="background:#8a9e8c"></div><div style="background:#f7f5f0"></div><div style="background:#4a4a4a"></div></div><div class="pn">Ardesia · Salvia</div><div class="pd">Grigio blu + verde salvia</div></div>
+      <div class="pc" onclick="applyPal(this,'#3d3530','#b8a090','#faf7f3','#4a403c','#fffcf8','#3d3530')"><div class="psw"><div style="background:#3d3530"></div><div style="background:#b8a090"></div><div style="background:#faf7f3"></div><div style="background:#4a403c"></div></div><div class="pn">Tabacco · Avorio</div><div class="pd">Testa di moro + cipria</div></div>
+      <div class="pc" onclick="applyPal(this,'#2a3240','#9aacb8','#f4f6f8','#3a4a54','#ffffff','#2a3240')"><div class="psw"><div style="background:#2a3240"></div><div style="background:#9aacb8"></div><div style="background:#f4f6f8"></div><div style="background:#3a4a54"></div></div><div class="pn">Inchiostro · Nebbia</div><div class="pd">Blu notte + azzurro</div></div>
+      <div class="pc" onclick="applyPal(this,'#38403a','#a8b89a','#f4f5f0','#404840','#ffffff','#38403a')"><div class="psw"><div style="background:#38403a"></div><div style="background:#a8b89a"></div><div style="background:#f4f5f0"></div><div style="background:#404840"></div></div><div class="pn">Bosco · Lino</div><div class="pd">Verde scuro + oliva</div></div>
+      <div class="pc" onclick="applyPal(this,'#3a3050','#a89ec0','#f6f4fa','#3a3050','#ffffff','#3a3050')"><div class="psw"><div style="background:#3a3050"></div><div style="background:#a89ec0"></div><div style="background:#f6f4fa"></div><div style="background:#3a3050"></div></div><div class="pn">Ametista · Lavanda</div><div class="pd">Indaco + lavanda</div></div>
+      <div class="pc" onclick="applyPal(this,'#3a3228','#c4a882','#faf6f0','#483e34','#fffdf8','#3a3228')"><div class="psw"><div style="background:#3a3228"></div><div style="background:#c4a882"></div><div style="background:#faf6f0"></div><div style="background:#483e34"></div></div><div class="pn">Noce · Pergamena</div><div class="pd">Bruno + oro antico</div></div>
+      <div class="pc" onclick="applyPal(this,'#2c3a3a','#7aa8a0','#f2f7f6','#364444','#ffffff','#2c3a3a')"><div class="psw"><div style="background:#2c3a3a"></div><div style="background:#7aa8a0"></div><div style="background:#f2f7f6"></div><div style="background:#364444"></div></div><div class="pn">Petrolio · Acqua</div><div class="pd">Verde petrolio + acqua</div></div>
+      <div class="pc" onclick="applyPal(this,'#2e2e2e','#a0a0a0','#f8f8f6','#3a3a3a','#ffffff','#2e2e2e')"><div class="psw"><div style="background:#2e2e2e"></div><div style="background:#a0a0a0"></div><div style="background:#f8f8f6"></div><div style="background:#3a3a3a"></div></div><div class="pn">Grafite · Cenere</div><div class="pd">Bianco e nero elegante</div></div>
     </div>
+  </div>
+  <div class="snav"><button class="btn bgh" onclick="goStep(4)">← Indietro</button><button class="btn bpr" onclick="goStep(6)">Avanti →</button></div>
+</div>
 
-  </div><!-- /content -->
-</div><!-- /main -->
+<!-- S6 -->
+<div class="step" id="s6">
+  <div class="sh"><div class="sn">Passo 06</div><div class="st">Loghi e immagini</div>
+    <div class="sd">Passa il mouse sulle zone per vedere dove appare ogni contenuto. Clicca per caricare.</div>
+  </div>
+  <div class="card"><div class="ct">Mappa interattiva — hover = posizione, click = carica</div>
+    <div class="mapwrap" style="position:relative">
+      <div class="map-tooltip" id="mapTip"></div>
+      <svg id="mapSVG" viewBox="0 0 420 297" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+        <!-- sfondo -->
+        <rect width="420" height="297" fill="#f7f5f0"/>
+        <!-- sidebar scura -->
+        <rect x="386" width="34" height="297" fill="#2c3e50"/>
+        <rect x="385" width="1" height="297" fill="#8a9e8c"/>
+        <!-- header -->
+        <rect x="7" y="5" width="375" height="18" fill="#ede9e0" rx="1"/>
+        <rect x="7" y="23" width="375" height=".4" fill="#2c3e50"/>
+        <text x="11" y="12" font-size="3.5" fill="#8a9e8c" font-family="monospace">TIPO ELABORATO</text>
+        <text x="11" y="20" font-size="6" fill="#2c3e50" font-family="monospace" font-weight="bold">TITOLO PROGETTO</text>
+
+        <!-- ZONA LOGHI — cliccabile -->
+        <rect id="mLogo" x="320" y="7" width="62" height="14" rx="2"
+              fill="#e0dcd4" stroke="#2c3e50" stroke-width=".7" style="cursor:pointer"
+              onclick="mapClick('logo')"
+              onmouseenter="showTip(event,'🏛 Loghi RTP — header in alto a destra')"
+              onmouseleave="hideTip()"/>
+        <text x="351" y="15" font-size="3.5" fill="#666" text-anchor="middle" font-family="monospace" pointer-events="none">LOGHI RTP ▲</text>
+
+        <!-- ZONA TESTO 1 — cliccabile (apre step 2) -->
+        <rect id="mT1" x="7" y="27" width="119" height="116" rx="1"
+              fill="#eef4ee" stroke="#7a9e7a" stroke-width=".8" stroke-dasharray="2.5,1.5" style="cursor:pointer"
+              onclick="mapClickText(1)"
+              onmouseenter="showTip(event,'✏ Sezione 1 — titolo + testo in alto a sinistra')"
+              onmouseleave="hideTip()"/>
+        <text x="66.5" y="72" font-size="5" fill="#5a8a5a" text-anchor="middle" font-family="monospace" font-weight="bold" pointer-events="none">TESTO 1</text>
+        <text x="66.5" y="80" font-size="3" fill="#7a9e7a" text-anchor="middle" font-family="monospace" pointer-events="none">Sezione 1</text>
+        <text x="66.5" y="86" font-size="3" fill="#7a9e7a" text-anchor="middle" font-family="monospace" pointer-events="none">clicca per modificare</text>
+
+        <!-- IMG 1 — cliccabile -->
+        <rect id="mImg1" x="130" y="27" width="119" height="116" rx="1"
+              fill="#d8e8f2" stroke="#4a8aaa" stroke-width="1" stroke-dasharray="3,2" style="cursor:pointer"
+              onclick="mapClick('img',1)"
+              onmouseenter="showTip(event,'🖼 Immagine 1 — Planimetria / Pianta (centro alto)')"
+              onmouseleave="hideTip()"/>
+        <text x="189.5" y="79" font-size="5.5" fill="#4a8aaa" text-anchor="middle" font-family="monospace" font-weight="bold" pointer-events="none">IMG 1</text>
+        <text x="189.5" y="87" font-size="3.5" fill="#4a8aaa" text-anchor="middle" font-family="monospace" pointer-events="none">Planimetria / Pianta</text>
+        <text x="189.5" y="93" font-size="3" fill="#7ab0cc" text-anchor="middle" font-family="monospace" pointer-events="none">clicca per caricare</text>
+        <text id="mImg1ok" x="189.5" y="103" font-size="3.5" fill="#5a9e7a" text-anchor="middle" visibility="hidden" font-family="monospace" pointer-events="none">✓ caricata</text>
+
+        <!-- DATO 1 (alto destra) -->
+        <rect x="253" y="27" width="129" height="55" rx="1" fill="#2c3e50"
+              onmouseenter="showTip(event,'🔢 Dato numerico 1 — valore grande su sfondo scuro')"
+              onmouseleave="hideTip()" style="cursor:default"/>
+        <rect x="253" y="27" width="129" height=".7" fill="#8a9e8c"/>
+        <text x="257" y="34" font-size="3" fill="#8a9e8c" font-family="monospace" pointer-events="none">DATO 1</text>
+        <text x="257" y="52" font-size="16" fill="white" font-family="monospace" font-weight="bold" pointer-events="none">—</text>
+
+        <!-- DATO 2 (medio destra) -->
+        <rect x="253" y="85" width="129" height="58" rx="1" fill="#2c3e50"
+              onmouseenter="showTip(event,'🔢 Dato numerico 2 — valore grande su sfondo scuro')"
+              onmouseleave="hideTip()" style="cursor:default"/>
+        <rect x="253" y="85" width="129" height=".7" fill="#8a9e8c"/>
+        <text x="257" y="92" font-size="3" fill="#8a9e8c" font-family="monospace" pointer-events="none">DATO 2</text>
+        <text x="257" y="110" font-size="16" fill="white" font-family="monospace" font-weight="bold" pointer-events="none">—</text>
+
+        <!-- ZONA TESTO 2 — cliccabile (basso sinistra, span2) -->
+        <rect id="mT2" x="7" y="147" width="119" height="113" rx="1"
+              fill="#eef4ee" stroke="#7a9e7a" stroke-width=".8" stroke-dasharray="2.5,1.5" style="cursor:pointer"
+              onclick="mapClickText(2)"
+              onmouseenter="showTip(event,'✏ Sezione 2 + Criteri — testo e lista in basso a sinistra')"
+              onmouseleave="hideTip()"/>
+        <text x="66.5" y="196" font-size="5" fill="#5a8a5a" text-anchor="middle" font-family="monospace" font-weight="bold" pointer-events="none">TESTO 2</text>
+        <text x="66.5" y="204" font-size="3" fill="#7a9e7a" text-anchor="middle" font-family="monospace" pointer-events="none">Sezione 2 + Criteri</text>
+        <text x="66.5" y="210" font-size="3" fill="#7a9e7a" text-anchor="middle" font-family="monospace" pointer-events="none">clicca per modificare</text>
+
+        <!-- IMG 2 — cliccabile (centro basso) -->
+        <rect id="mImg2" x="130" y="147" width="119" height="113" rx="1"
+              fill="#f0e8d0" stroke="#c4a040" stroke-width="1" stroke-dasharray="3,2" style="cursor:pointer"
+              onclick="mapClick('img',2)"
+              onmouseenter="showTip(event,'🖼 Immagine 2 — Render / Sezione / Vista 3D (centro basso)')"
+              onmouseleave="hideTip()"/>
+        <text x="189.5" y="198" font-size="5.5" fill="#c4a040" text-anchor="middle" font-family="monospace" font-weight="bold" pointer-events="none">IMG 2</text>
+        <text x="189.5" y="207" font-size="3.5" fill="#c4a040" text-anchor="middle" font-family="monospace" pointer-events="none">Render / Vista 3D</text>
+        <text x="189.5" y="213" font-size="3" fill="#d4b060" text-anchor="middle" font-family="monospace" pointer-events="none">clicca per caricare</text>
+        <text id="mImg2ok" x="189.5" y="223" font-size="3.5" fill="#5a9e7a" text-anchor="middle" visibility="hidden" font-family="monospace" pointer-events="none">✓ caricata</text>
+
+        <!-- IMG 3 — cliccabile (in alto a destra, sostituisce dato 3) -->
+        <!-- NB: nella tavola generata la cella c02 mostra dato 1, la c_img3 è una nuova cella r0c2b o inseriamo img3 in una cella dedicata -->
+        <!-- Per ora img3 va nella posizione DATO 3 in basso a destra -->
+        <rect id="mImg3" x="253" y="147" width="129" height="113" rx="1"
+              fill="#e8d8f0" stroke="#8050a0" stroke-width="1" stroke-dasharray="3,2" style="cursor:pointer"
+              onclick="mapClick('img',3)"
+              onmouseenter="showTip(event,'🖼 Immagine 3 — Sezione / Prospetto (basso destra)')"
+              onmouseleave="hideTip()"/>
+        <text x="317.5" y="198" font-size="5.5" fill="#8050a0" text-anchor="middle" font-family="monospace" font-weight="bold" pointer-events="none">IMG 3</text>
+        <text x="317.5" y="207" font-size="3.5" fill="#8050a0" text-anchor="middle" font-family="monospace" pointer-events="none">Sezione / Prospetto</text>
+        <text x="317.5" y="213" font-size="3" fill="#a070c0" text-anchor="middle" font-family="monospace" pointer-events="none">clicca per caricare</text>
+        <text id="mImg3ok" x="317.5" y="223" font-size="3.5" fill="#5a9e7a" text-anchor="middle" visibility="hidden" font-family="monospace" pointer-events="none">✓ caricata</text>
+
+        <!-- sidebar labels -->
+        <text x="403" y="30" font-size="2.8" fill="rgba(255,255,255,.35)" text-anchor="middle" font-family="monospace">ENTE</text>
+        <text x="403" y="80" font-size="2.8" fill="rgba(255,255,255,.35)" text-anchor="middle" font-family="monospace">CIG</text>
+        <text x="403" y="140" font-size="2.8" fill="rgba(255,255,255,.35)" text-anchor="middle" font-family="monospace">RTP</text>
+        <text x="403" y="220" font-size="2.8" fill="rgba(255,255,255,.35)" text-anchor="middle" font-family="monospace">DATA</text>
+
+        <!-- footer -->
+        <rect x="7" y="267" width="375" height=".25" fill="#ccc"/>
+        <text x="11" y="276" font-size="2.8" fill="#aaa" font-family="monospace">Studio · DL · Normativa</text>
+        <rect x="346" y="269" width="26" height="8" rx="1" fill="#2c3e50"/>
+        <text x="359" y="275" font-size="3.5" fill="white" text-anchor="middle" font-family="monospace">T-01</text>
+
+        <!-- legenda -->
+        <rect x="7" y="282" width="7" height="4" rx="1" fill="#eef4ee" stroke="#7a9e7a" stroke-width=".6" stroke-dasharray="1.5,1"/>
+        <text x="17" y="285.5" font-size="3" fill="#7a9e7a" font-family="monospace">= testo (clicca per editare)</text>
+        <rect x="110" y="282" width="7" height="4" rx="1" fill="#d8e8f2" stroke="#4a8aaa" stroke-width=".6" stroke-dasharray="1.5,1"/>
+        <text x="120" y="285.5" font-size="3" fill="#4a8aaa" font-family="monospace">= immagine (clicca per caricare)</text>
+        <rect x="248" y="282" width="7" height="4" rx="1" fill="#2c3e50"/>
+        <text x="258" y="285.5" font-size="3" fill="#aaa" font-family="monospace">= dati numerici</text>
+      </svg>
+    </div>
+    <input type="file" id="mapLogoIn" accept="image/*" style="display:none" onchange="handleMapLogo(this)">
+    <input type="file" id="mapImg1In" accept="image/*" style="display:none" onchange="handleMapImg(1,this)">
+    <input type="file" id="mapImg2In" accept="image/*" style="display:none" onchange="handleMapImg(2,this)">
+    <input type="file" id="mapImg3In" accept="image/*" style="display:none" onchange="handleMapImg(3,this)">
+  </div>
+
+  <div class="card"><div class="ct">Loghi RTP (max 4)</div>
+    <div class="lgrid">
+      <div class="lz" id="lz1" onclick="document.getElementById('lf1').click()"><input type="file" id="lf1" accept="image/*" onchange="handleLogo(1,this)"><div style="font-size:18px">🏛️</div><div class="uname" style="font-size:9px">Mandataria</div><div class="uhint">clicca</div></div>
+      <div class="lz" id="lz2" onclick="document.getElementById('lf2').click()"><input type="file" id="lf2" accept="image/*" onchange="handleLogo(2,this)"><div style="font-size:18px">🏢</div><div class="uname" style="font-size:9px">Partner 1</div><div class="uhint">clicca</div></div>
+      <div class="lz" id="lz3" onclick="document.getElementById('lf3').click()"><input type="file" id="lf3" accept="image/*" onchange="handleLogo(3,this)"><div style="font-size:18px">🏢</div><div class="uname" style="font-size:9px">Partner 2</div><div class="uhint">clicca</div></div>
+      <div class="lz" id="lz4" onclick="document.getElementById('lf4').click()"><input type="file" id="lf4" accept="image/*" onchange="handleLogo(4,this)"><div style="font-size:18px">🏢</div><div class="uname" style="font-size:9px">Partner 3</div><div class="uhint">opzionale</div></div>
+    </div>
+  </div>
+  <div class="card"><div class="ct">Immagini di progetto</div>
+    <div class="ugrid">
+      <div class="uz" id="uz1" onclick="document.getElementById('uf1').click()"><input type="file" id="uf1" accept="image/*" onchange="handleImg(1,this)"><div class="ubadge" style="background:#4a8aaa">IMG 1</div><div class="uname">Planimetria / Pianta</div><div class="uhint">cella centro alto</div></div>
+      <div class="uz" id="uz2" onclick="document.getElementById('uf2').click()"><input type="file" id="uf2" accept="image/*" onchange="handleImg(2,this)"><div class="ubadge" style="background:#c4a040">IMG 2</div><div class="uname">Render / Vista 3D</div><div class="uhint">cella centro basso</div></div>
+      <div class="uz" id="uz3" onclick="document.getElementById('uf3').click()"><input type="file" id="uf3" accept="image/*" onchange="handleImg(3,this)"><div class="ubadge" style="background:#8050a0">IMG 3</div><div class="uname">Sezione / Prospetto</div><div class="uhint">cella basso destra</div></div>
+    </div>
+  </div>
+  <div class="snav"><button class="btn bgh" onclick="goStep(5)">← Indietro</button><button class="btn bpr" onclick="goStep(7)">Avanti →</button></div>
+</div>
+
+<!-- S7 -->
+<div class="step" id="s7">
+  <div class="sh"><div class="sn">Passo 07</div><div class="st">Genera la tavola</div><div class="sd">Tavola A3 con riquadri ridimensionabili via drag nella finestra generata.</div></div>
+  <div class="card"><div class="ct">Riepilogo</div><div class="sumbox" id="sumbox">—</div></div>
+  <div class="card"><div class="ct">Istruzioni stampa</div>
+    <div style="font-size:12px;color:var(--mut);line-height:1.9">
+      1. <strong style="color:var(--txt)">Genera Tavola A3</strong> → nuova finestra<br>
+      2. Trascina le <strong style="color:var(--txt)">linee divisorie</strong> per ridimensionare i riquadri<br>
+      3. <strong style="color:var(--txt)">Ctrl+P</strong> → Formato A3 orizzontale · Margini Nessuno · ✓ Stampa sfondi<br>
+      4. Salva come PDF
+    </div>
+  </div>
+  <div class="snav"><button class="btn bgh" onclick="goStep(6)">← Indietro</button><button class="btn bge" onclick="generate()">⬡ Genera Tavola A3</button></div>
+</div>
+
+</div></div>
 
 <script>
-// ── STATE ────────────────────────────────────────────────
-const state = {
-  currentStep: 1,
-  totalSteps: 7,
-  fontHead: "'Barlow Condensed', sans-serif",
-  fontHeadGF: "Barlow+Condensed:wght@700",
-  fontBody: "'Barlow', sans-serif",
-  fontBodyGF: "Barlow:wght@300;400;500",
-  layout: 'classico',
-  criteria: [],
-  logos: { 1: null, 2: null, 3: null, 4: null },
-  imgs: { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null },
+// ── STATE ──────────────────────────────────────────────────
+var S = {
+  fh:"'Barlow Condensed',sans-serif", gfh:"Barlow+Condensed:wght@700",
+  fb:"'Barlow',sans-serif",           gfb:"Barlow:wght@300;400;500",
+  logos:{1:null,2:null,3:null,4:null},
+  imgs:{1:null,2:null,3:null}
 };
+var critN=0;
 
-// ── NAVIGATION ───────────────────────────────────────────
-function goStep(n) {
-  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(`step${n}`).classList.add('active');
+// ── NAV ────────────────────────────────────────────────────
+function goStep(n){
+  document.querySelectorAll('.step').forEach(function(el){el.classList.remove('on');});
+  document.getElementById('s'+n).classList.add('on');
+  document.querySelectorAll('.ni').forEach(function(el){
+    var s=+el.dataset.s; el.classList.remove('on','done');
+    if(s===n) el.classList.add('on');
+    if(s<n)   el.classList.add('done');
+  });
+  document.getElementById('topLabel').textContent='Passo '+n+' di 7';
+  document.getElementById('pgf').style.width=(n/7*100)+'%';
+  if(n===7) buildSummary();
+}
 
-  document.querySelectorAll('.nav-item').forEach(item => {
-    const s = parseInt(item.dataset.step);
-    item.classList.remove('active', 'done');
-    if (s === n) item.classList.add('active');
-    if (s < n) item.classList.add('done');
+// ── FONT ───────────────────────────────────────────────────
+function selFont(t,el){
+  var grid=t==='h'?'fhGrid':'fbGrid';
+  document.querySelectorAll('#'+grid+' .fo').forEach(function(e){e.classList.remove('sel');});
+  el.classList.add('sel');
+  if(t==='h'){S.fh=el.dataset.fh; S.gfh=el.dataset.gfh;}
+  else{S.fb=el.dataset.fb; S.gfb=el.dataset.gfb;}
+}
+
+// ── PALETTE ────────────────────────────────────────────────
+function applyPal(el,p,a,bg,tx,cd,ck){
+  document.querySelectorAll('.pc').forEach(function(e){e.classList.remove('sel');});
+  el.classList.add('sel');
+  document.getElementById('cPrimary').value=p;
+  document.getElementById('cAccent').value=a;
+  document.getElementById('cBg').value=bg;
+  document.getElementById('cText').value=tx;
+  document.getElementById('cCard').value=cd;
+  document.getElementById('cDark').value=ck;
+}
+
+// ── CRITERI ────────────────────────────────────────────────
+function addCrit(){
+  critN++;
+  var id=critN;
+  var d=document.createElement('div');
+  d.className='cb'; d.id='cb'+id;
+  d.innerHTML='<div class="ctag">Cr.'+id+'</div>'
+    +'<div class="ci"><input placeholder="Titolo criterio" id="ct'+id+'">'
+    +'<input placeholder="Descrizione breve" id="cd'+id+'"></div>'
+    +'<button class="crm" onclick="document.getElementById(\'cb'+id+'\').remove()">✕</button>';
+  document.getElementById('critList').appendChild(d);
+}
+
+// ── TOOLTIP MAPPA ──────────────────────────────────────────
+function showTip(e, text){
+  var tip=document.getElementById('mapTip');
+  var wrap=document.getElementById('mapSVG').parentElement;
+  var wr=wrap.getBoundingClientRect();
+  var svgEl=document.getElementById('mapSVG');
+  var sr=svgEl.getBoundingClientRect();
+  tip.textContent=text;
+  tip.style.display='block';
+  tip.style.left=(e.clientX - wr.left + 8)+'px';
+  tip.style.top=(e.clientY - wr.top - 28)+'px';
+}
+function hideTip(){
+  document.getElementById('mapTip').style.display='none';
+}
+
+// ── MAP CLICK TESTO ────────────────────────────────────────
+function mapClickText(n){
+  goStep(2);
+  setTimeout(function(){
+    var el=document.getElementById(n===1?'sec1Titolo':'sec2Titolo');
+    if(el){el.focus(); el.scrollIntoView({behavior:'smooth',block:'center'});}
+  },100);
+}
+
+// ── UPLOADS ────────────────────────────────────────────────
+function handleLogo(n,inp){
+  if(!inp.files[0]) return;
+  var r=new FileReader();
+  r.onload=function(e){
+    S.logos[n]=e.target.result;
+    var z=document.getElementById('lz'+n);
+    z.classList.add('ok');
+    z.innerHTML='<img class="lprev" src="'+e.target.result+'"><div class="ufname">'+inp.files[0].name+'</div>';
+    var m=document.getElementById('mLogo');
+    if(m){m.setAttribute('fill','rgba(90,158,122,.2)');m.setAttribute('stroke','#5a9e7a');}
+  };
+  r.readAsDataURL(inp.files[0]);
+}
+
+function handleImg(n,inp){
+  if(!inp.files[0]) return;
+  var r=new FileReader();
+  r.onload=function(e){
+    S.imgs[n]=e.target.result;
+    var z=document.getElementById('uz'+n);
+    z.classList.add('ok');
+    var names=['','Planimetria','Render / Vista 3D','Sezione / Prospetto'];
+    z.innerHTML='<img class="uprev" src="'+e.target.result+'"><div class="uname" style="font-size:9px;color:#5a9e7a">✓ '+names[n]+'</div><div class="ufname">'+inp.files[0].name+'</div>';
+    var zone=document.getElementById('mImg'+n);
+    var ok=document.getElementById('mImg'+n+'ok');
+    if(zone){zone.setAttribute('fill','rgba(90,158,122,.15)');zone.setAttribute('stroke','#5a9e7a');}
+    if(ok)  ok.setAttribute('visibility','visible');
+    // miniatura SVG
+    var svg=document.getElementById('mapSVG');
+    var prev=document.getElementById('svgI'+n);
+    if(prev) prev.remove();
+    var coords={1:[130,27,119,116],2:[130,147,119,113],3:[253,147,129,113]};
+    var c=coords[n];
+    if(c){
+      var img=document.createElementNS('http://www.w3.org/2000/svg','image');
+      img.setAttribute('id','svgI'+n);
+      img.setAttribute('x',c[0]+1); img.setAttribute('y',c[1]+1);
+      img.setAttribute('width',c[2]-2); img.setAttribute('height',c[3]-2);
+      img.setAttribute('preserveAspectRatio','xMidYMid slice');
+      img.setAttribute('href',e.target.result);
+      img.setAttribute('opacity','.7');
+      img.setAttribute('pointer-events','none');
+      svg.appendChild(img);
+    }
+  };
+  r.readAsDataURL(inp.files[0]);
+}
+
+function mapClick(type,n){
+  if(type==='logo') document.getElementById('mapLogoIn').click();
+  else document.getElementById('mapImg'+n+'In').click();
+}
+document.getElementById('mapLogoIn').onchange=function(){handleLogo(1,this);};
+document.getElementById('mapImg1In').onchange=function(){handleImg(1,this);};
+document.getElementById('mapImg2In').onchange=function(){handleImg(2,this);};
+document.getElementById('mapImg3In').onchange=function(){handleImg(3,this);};
+
+// ── SUMMARY ────────────────────────────────────────────────
+function gv(id){return (document.getElementById(id)||{}).value||'';}
+function buildSummary(){
+  var lc=Object.values(S.logos).filter(Boolean).length;
+  var ic=Object.values(S.imgs).filter(Boolean).length;
+  var nc=document.querySelectorAll('.cb').length;
+  document.getElementById('sumbox').innerHTML=
+    '<strong>Progetto:</strong> '+(gv('progettoTitolo')||'—')+'<br>'+
+    '<strong>Ente:</strong> '+(gv('enteNome')||'—')+' · CIG: '+(gv('cig')||'—')+'<br>'+
+    '<strong>Importo:</strong> '+(gv('importo')||'—')+' · '+(gv('normativa')||'—')+'<br>'+
+    '<strong>Mandataria:</strong> '+(gv('rtpMandataria')||'—')+', '+(gv('rtpCitta')||'—')+'<br>'+
+    '<strong>Font titoli:</strong> '+S.fh.split(',')[0].replace(/'/g,'')+'<br>'+
+    '<strong>Font corpo:</strong>  '+S.fb.split(',')[0].replace(/'/g,'')+'<br>'+
+    '<strong>Criteri:</strong> '+nc+' · <strong>Loghi:</strong> '+lc+'/4 · <strong>Immagini:</strong> '+ic+'/3';
+}
+
+// ── HELPERS ────────────────────────────────────────────────
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function imgCell(n){
+  return S.imgs[n]
+    ? '<img src="'+S.imgs[n]+'" style="width:100%;height:100%;object-fit:cover;display:block;">'
+    : '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:monospace;font-size:6pt;color:#aaa;letter-spacing:1px;text-transform:uppercase">img '+n+'</div>';
+}
+function bLbl(t){return '<div style="font-family:var(--fh);font-size:5.5pt;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ca);padding:2.5mm 3mm 1mm">'+esc(t)+'</div>';}
+function bH2(t){ return '<div style="font-family:var(--fh);font-size:9pt;font-weight:700;color:var(--c1);text-transform:uppercase;letter-spacing:.3px;line-height:1.1;padding:0 3mm 1.5mm">'+esc(t)+'</div>';}
+function bP(t){  return '<div style="font-family:var(--fb);font-size:6.5pt;line-height:1.5;color:var(--ct);padding:0 3mm 2.5mm">'+esc(t)+'</div>';}
+function bNum(lbl,val,unit){
+  return '<div style="font-family:var(--fh);font-size:5pt;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ca);padding:2.5mm 3mm 1mm">'+esc(lbl)+'</div>'
+    +'<div style="font-family:var(--fh);font-size:20pt;font-weight:700;color:white;line-height:1;padding:0 3mm">'+esc(val)+'</div>'
+    +'<div style="font-family:var(--fh);font-size:7pt;font-weight:300;color:var(--ca);letter-spacing:1px;padding:0 3mm">'+esc(unit)+'</div>';
+}
+
+// ── GENERA ─────────────────────────────────────────────────
+function generate(){
+  var crits='';
+  document.querySelectorAll('.cb').forEach(function(b){
+    var id=b.id.replace('cb','');
+    var t=(document.getElementById('ct'+id)||{}).value||'';
+    var d=(document.getElementById('cd'+id)||{}).value||'';
+    if(t||d) crits+='<li><strong>'+esc(t)+'</strong>'+(d?': '+esc(d):'')+'</li>';
   });
 
-  state.currentStep = n;
-  document.getElementById('topStepLabel').textContent = `Passo ${n} di ${state.totalSteps}`;
-  document.getElementById('progressFill').style.width = `${(n / state.totalSteps) * 100}%`;
-
-  if (n === 7) buildSummary();
-  window.scrollTo(0, 0);
-}
-
-// ── FONT SELECTION ───────────────────────────────────────
-function selectFont(type, el) {
-  const grid = type === 'head' ? 'fontHeadGrid' : 'fontBodyGrid';
-  document.querySelectorAll(`#${grid} .font-option`).forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  if (type === 'head') {
-    state.fontHead = el.dataset.font;
-    state.fontHeadGF = el.dataset.gfont;
-  } else {
-    state.fontBody = el.dataset.font;
-    state.fontBodyGF = el.dataset.gfont;
-  }
-}
-
-// ── LAYOUT SELECTION ─────────────────────────────────────
-function selectLayout(el) {
-  document.querySelectorAll('.layout-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  state.layout = el.dataset.layout;
-}
-
-// ── PALETTE PRESETS ──────────────────────────────────────
-function applyPalette(primary, accent, bg, text) {
-  document.getElementById('colorPrimary').value = primary;
-  document.getElementById('colorAccent').value = accent;
-  document.getElementById('colorBg').value = bg;
-  document.getElementById('colorText').value = text;
-}
-
-// ── CRITERI ──────────────────────────────────────────────
-let criterioCount = 0;
-function addCriterio() {
-  criterioCount++;
-  const id = criterioCount;
-  const container = document.getElementById('criteriaContainer');
-  const div = document.createElement('div');
-  div.className = 'criterio-block';
-  div.id = `criterio_${id}`;
-  div.innerHTML = `
-    <div class="criterio-tag">Cr. ${id}</div>
-    <div class="criterio-inputs">
-      <input class="field input" style="background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px 12px;color:var(--text);font-family:var(--font-ui);font-size:12px;width:100%"
-        type="text" placeholder="Titolo criterio (es. Consolidamento strutturale)" id="cTit_${id}">
-      <input class="field input" style="background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px 12px;color:var(--text);font-family:var(--font-ui);font-size:12px;width:100%"
-        type="text" placeholder="Descrizione breve (es. Iniezioni armate reversibili NTC 2018)" id="cDesc_${id}">
-    </div>
-    <button class="criterio-remove" onclick="removeCriterio(${id})">✕</button>
-  `;
-  container.appendChild(div);
-}
-function removeCriterio(id) {
-  const el = document.getElementById(`criterio_${id}`);
-  if (el) el.remove();
-}
-
-// ── FILE UPLOADS ─────────────────────────────────────────
-function triggerLogoUpload(n) { document.getElementById(`logoFile${n}`).click(); }
-function triggerImgUpload(n) { document.getElementById(`imgFile${n}`).click(); }
-
-function handleLogo(n, input) {
-  if (!input.files[0]) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    state.logos[n] = e.target.result;
-    const zone = document.getElementById(`logoZone${n}`);
-    zone.classList.add('has-file');
-    zone.innerHTML = `
-      <img src="${e.target.result}" class="logo-preview">
-      <div class="upload-filename">${input.files[0].name}</div>
-    `;
+  var C={
+    p:document.getElementById('cPrimary').value,
+    a:document.getElementById('cAccent').value,
+    bg:document.getElementById('cBg').value,
+    tx:document.getElementById('cText').value,
+    cd:document.getElementById('cCard').value,
+    ck:document.getElementById('cDark').value
   };
-  reader.readAsDataURL(input.files[0]);
-}
 
-function handleImg(n, input) {
-  if (!input.files[0]) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    state.imgs[n] = e.target.result;
-    const zone = document.getElementById(`imgZone${n}`);
-    zone.classList.add('has-file');
-    const names = ['','Planimetria / Pianta','Render / Vista 3D','Sezione / Prospetto','Stato attuale','Schema / Infografica','Inquadramento / CTR'];
-    zone.innerHTML = `
-      <img src="${e.target.result}" class="upload-preview">
-      <div class="upload-slot-name" style="font-size:9px;color:var(--green)">✓ ${names[n]}</div>
-      <div class="upload-filename">${input.files[0].name}</div>
-    `;
-  };
-  reader.readAsDataURL(input.files[0]);
-}
+  var lArr=[1,2,3,4].map(function(n){return S.logos[n];}).filter(Boolean);
+  var lmw=lArr.length<=1?'22mm':lArr.length===2?'17mm':lArr.length===3?'13mm':'10mm';
+  var logosHTML=lArr.map(function(src){
+    return '<img src="'+src+'" style="max-height:9mm;max-width:'+lmw+';width:auto;height:auto;object-fit:contain;flex-shrink:1;">';
+  }).join('');
+  if(!logosHTML) logosHTML='<div style="font-family:var(--fh);font-size:9pt;font-weight:700;color:var(--c1);letter-spacing:2px;border:.4mm solid var(--c1);padding:1.5mm 2.5mm;">'+esc(gv('rtpMandataria')||'STUDIO')+'</div>';
 
-// ── SUMMARY ──────────────────────────────────────────────
-function buildSummary() {
-  const g = id => document.getElementById(id)?.value || '—';
-  const logosUpl = Object.values(state.logos).filter(Boolean).length;
-  const imgsUpl = Object.values(state.imgs).filter(Boolean).length;
+  // LAYOUT: 3 colonne × 2 righe
+  // r0: [testo1, img1, dato1]
+  // r1: [testo2+criteri, img2, img3]
+  var cells=[
+    {id:'c00',r:0,c:0,type:'text',acc:true, span2:false,
+     html: bLbl('Inquadramento')+bH2(gv('sec1Titolo')||'Sezione 1')+bP(gv('sec1Testo'))},
+    {id:'c01',r:0,c:1,type:'img', acc:false,span2:false, html:imgCell(1)},
+    {id:'c02',r:0,c:2,type:'dark',acc:false,span2:false,
+     html: bNum(gv('d1Label')||'Dato 1',gv('d1Val')||'—',gv('d1Unit')||'')},
+    {id:'c10',r:1,c:0,type:'text',acc:false,span2:false,
+     html: bLbl('Proposta migliorativa')+bH2(gv('sec2Titolo')||'Strategia')
+           +'<ul style="list-style:none;margin:1mm 3mm 0;display:grid;grid-template-columns:1fr 1fr;gap:1mm">'+crits+'</ul>'},
+    {id:'c11',r:1,c:1,type:'img', acc:false,span2:false, html:imgCell(2)},
+    {id:'c12',r:1,c:2,type:'img', acc:false,span2:false, html:imgCell(3)},
+  ];
 
-  document.getElementById('summaryBox').innerHTML = `
-    <strong>Progetto:</strong> ${g('progettoTitolo')}<br>
-    <strong>Ente:</strong> ${g('enteNome')} · CIG: ${g('cig')}<br>
-    <strong>Importo:</strong> ${g('importo')} · ${g('normativa')}<br>
-    <strong>Mandataria:</strong> ${g('rtpMandataria')}, ${g('rtpCitta')}<br>
-    <strong>Font titoli:</strong> ${state.fontHead.split(',')[0].replace(/'/g,'')}<br>
-    <strong>Font corpo:</strong> ${state.fontBody.split(',')[0].replace(/'/g,'')}<br>
-    <strong>Layout:</strong> ${state.layout}<br>
-    <strong>Criteri inseriti:</strong> ${document.querySelectorAll('.criterio-block').length}<br>
-    <strong>Loghi caricati:</strong> ${logosUpl}/4 · <strong>Immagini:</strong> ${imgsUpl}/6
-  `;
-}
+  var cellsJSON=JSON.stringify(cells);
 
-// ── GENERATE ─────────────────────────────────────────────
-function generateSheet() {
-  const g = id => document.getElementById(id)?.value || '';
-
-  // Raccoglie criteri
-  const criteriaHTML = Array.from(document.querySelectorAll('.criterio-block')).map((el, i) => {
-    const id = el.id.split('_')[1];
-    const tit = document.getElementById(`cTit_${id}`)?.value || '';
-    const desc = document.getElementById(`cDesc_${id}`)?.value || '';
-    return `<li><strong>${tit}:</strong> ${desc}</li>`;
+  var sbItems=[
+    ['Stazione Appaltante',gv('enteNome'),gv('enteIndirizzo')],
+    ['CIG',gv('cig'),''],
+    ['Importo',gv('importo'),'IVA esclusa'],
+    ['RTP Mandataria',gv('rtpMandataria'),gv('rtpCitta')],
+    ['Data',gv('dataElab'),'']
+  ].map(function(x){
+    return '<div style="flex:1;padding:2mm 1.5mm;border-left:.4mm solid rgba(255,255,255,.18)">'
+      +'<div style="font-family:var(--fh);font-size:4.5pt;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:1mm">'+x[0]+'</div>'
+      +'<div style="font-family:var(--fh);font-size:6.5pt;font-weight:600;color:white;line-height:1.2;word-break:break-word">'+esc(x[1])+'</div>'
+      +(x[2]?'<div style="font-family:var(--fb);font-size:4.5pt;color:rgba(255,255,255,.28);margin-top:.4mm">'+esc(x[2])+'</div>':'')
+      +'</div>';
   }).join('');
 
-  // Raccoglie colori
-  const cPrimary = document.getElementById('colorPrimary').value;
-  const cAccent = document.getElementById('colorAccent').value;
-  const cBg = document.getElementById('colorBg').value;
-  const cText = document.getElementById('colorText').value;
-  const cCard = document.getElementById('colorCard').value;
-  const cCardDark = document.getElementById('colorCardDark').value;
-
-  // Immagini
-  const img = n => state.imgs[n] ? `<img src="${state.imgs[n]}" style="width:100%;height:100%;object-fit:cover;display:block;">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:monospace;font-size:7pt;color:#aaa;letter-spacing:1px;text-transform:uppercase;">[immagine ${n}]</div>`;
-
-  // Loghi
-  const logos = [1,2,3,4].map(n => state.logos[n]
-    ? `<img src="${state.logos[n]}" style="max-height:10mm;max-width:22mm;object-fit:contain;">`
-    : ''
-  ).filter(Boolean).join('');
-
-  // Loghi mandanti
-  const mandantiStr = g('rtpMandanti');
-  const fontGFHead = state.fontHeadGF;
-  const fontGFBody = state.fontBodyGF;
-
-  // Dati numerici
-  const dataCards = [1,2,3].map(n => `
-    <div style="background:${cCardDark};border-top:1mm solid ${cAccent};padding:3mm 3.5mm;overflow:hidden;">
-      <div style="font-family:var(--fh);font-size:6pt;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:${cAccent};margin-bottom:1.5mm;">${g(`d${n}Label`)}</div>
-      <div style="font-family:var(--fh);font-size:26pt;font-weight:700;color:white;line-height:1;">${g(`d${n}Val`) || '—'}</div>
-      <div style="font-family:var(--fh);font-size:9pt;font-weight:300;color:${cAccent};letter-spacing:1px;">${g(`d${n}Unit`)}</div>
-    </div>
-  `).join('');
-
-  const html = `<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8">
-<title>${g('progettoTitolo') || 'Tavola A3'} · ${g('numTavola') || 'T01'}</title>
-<link href="https://fonts.googleapis.com/css2?family=${fontGFHead}&family=${fontGFBody}&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
-:root {
-  --fh: ${state.fontHead};
-  --fb: ${state.fontBody};
-  --c1: ${cPrimary};
-  --ca: ${cAccent};
-  --cbg: ${cBg};
-  --ct: ${cText};
-  --ccard: ${cCard};
-  --cdark: ${cCardDark};
-}
-body { background:#333; display:flex; flex-direction:column; align-items:center; padding:20px; gap:16px; }
-.controls { display:flex; gap:12px; align-items:center; }
-.controls button {
-  background:var(--ca); color:white; border:none; padding:10px 22px;
-  font-size:13px; cursor:pointer; border-radius:4px; letter-spacing:1px;
-}
-.sheet {
-  width:420mm; height:297mm; background:var(--cbg);
-  position:relative; overflow:hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-}
-/* Sidebar destra decorativa */
-.bg-r { position:absolute; top:0; right:0; width:34mm; height:100%; background:var(--c1); z-index:0; }
-.bg-r2 { position:absolute; top:0; right:34mm; width:1.5mm; height:100%; background:var(--ca); z-index:1; }
-/* Header */
-.hdr {
-  position:absolute; top:9mm; left:9mm; right:calc(34mm + 4mm);
-  height:22mm; border-bottom:.5mm solid var(--c1);
-  z-index:10; display:flex; align-items:flex-end; gap:5mm; padding-bottom:3mm;
-}
-.hdr-title { flex:1; }
-.hdr-tag { font-family:var(--fh); font-size:7pt; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:var(--ca); }
-.hdr-h1 { font-family:var(--fh); font-size:18pt; font-weight:700; color:var(--c1); line-height:1; text-transform:uppercase; letter-spacing:1px; }
-.hdr-sub { font-family:var(--fb); font-size:7.5pt; font-weight:300; color:var(--ct); margin-top:1mm; }
-.hdr-logos { display:flex; align-items:center; gap:4mm; flex-wrap:wrap; }
-/* Content */
-.content {
-  position:absolute;
-  top:calc(9mm + 22mm + 4mm);
-  left:9mm; right:calc(34mm + 4mm);
-  bottom:calc(9mm + 12mm);
-  z-index:10;
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  grid-template-rows:1fr 1fr;
-  gap:3.5mm;
-}
-.card { background:var(--ccard); border-top:1mm solid var(--c1); padding:3mm 3.5mm; overflow:hidden; }
-.card.acc { border-top-color:var(--ca); }
-.card-lbl { font-family:var(--fh); font-size:6pt; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:var(--ca); margin-bottom:1.5mm; }
-.card h2 { font-family:var(--fh); font-size:11pt; font-weight:700; color:var(--c1); text-transform:uppercase; letter-spacing:.5px; line-height:1.1; margin-bottom:2mm; }
-.card p { font-family:var(--fb); font-size:7pt; line-height:1.55; color:var(--ct); }
-.card-img { border-top:1mm solid var(--c1); overflow:hidden; }
-.s2 { grid-column:span 2; }
-.criteria-ul { list-style:none; margin-top:2mm; display:grid; grid-template-columns:1fr 1fr; gap:1.5mm; }
-.criteria-ul li { font-family:var(--fb); font-size:6.5pt; color:var(--ct); padding-left:3mm; position:relative; line-height:1.4; }
-.criteria-ul li::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:1.5mm; height:1.5mm; background:var(--ca); }
-/* Sidebar */
-.sidebar {
-  position:absolute; top:9mm; right:9mm; width:calc(34mm - 9mm);
-  bottom:calc(9mm + 12mm); z-index:10;
-  display:flex; flex-direction:column; gap:3.5mm;
-}
-.sb-item { flex:1; padding:3mm 2mm; border-left:.7mm solid rgba(255,255,255,.2); }
-.sb-lbl { font-family:var(--fh); font-size:5.5pt; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.45); margin-bottom:1.5mm; }
-.sb-val { font-family:var(--fh); font-size:8.5pt; font-weight:600; color:white; line-height:1.25; }
-.sb-sub { font-family:var(--fb); font-size:6pt; color:rgba(255,255,255,.35); margin-top:1mm; line-height:1.3; }
-/* Footer */
-.footer {
-  position:absolute; bottom:9mm; left:9mm; right:calc(34mm + 4mm);
-  height:10mm; border-top:.3mm solid #ccc;
-  display:flex; align-items:center; justify-content:space-between;
-  z-index:10; padding-top:2mm;
-}
-.ftr-l { font-family:var(--fb); font-size:5.5pt; color:#999; }
-.ftr-l strong { color:var(--ct); font-weight:500; }
-.ftr-c { font-family:var(--fh); font-size:5.5pt; letter-spacing:2px; text-transform:uppercase; color:#bbb; }
-.tav-num { background:var(--c1); color:white; padding:1mm 2.5mm; font-family:var(--fh); font-size:8pt; font-weight:600; letter-spacing:1px; }
-@media print {
-  body { background:none; padding:0; }
-  .controls { display:none; }
-  .sheet { width:420mm; height:297mm; box-shadow:none; page-break-after:always; }
-  @page { size:A3 landscape; margin:0; }
-}
-</style>
-</head>
-<body>
-<div class="controls">
-  <button onclick="window.print()">⎙ Stampa / Esporta PDF</button>
-  <span style="color:#aaa;font-size:12px;">Tavola A3 · 420×297mm · Formato stampa</span>
-</div>
-
-<div class="sheet">
-  <div class="bg-r"></div>
-  <div class="bg-r2"></div>
-
-  <div class="hdr">
-    <div class="hdr-title">
-      <div class="hdr-tag">${g('tipoElaborato') || 'Relazione Tecnica'}</div>
-      <div class="hdr-h1">${g('progettoTitolo') || 'Titolo Progetto'}</div>
-      <div class="hdr-sub">${g('progettoSottotitolo') || ''}</div>
-    </div>
-    <div class="hdr-logos">${logos || `<div style="font-family:var(--fh);font-size:11pt;font-weight:700;color:var(--c1);letter-spacing:2px;border:.5mm solid var(--c1);padding:2mm 3mm;">${g('rtpMandataria') || 'STUDIO'}</div>`}</div>
-  </div>
-
-  <div class="sidebar">
-    <div class="sb-item"><div class="sb-lbl">Stazione Appaltante</div><div class="sb-val">${g('enteNome') || '—'}</div><div class="sb-sub">${g('enteIndirizzo') || ''}</div></div>
-    <div class="sb-item"><div class="sb-lbl">CIG</div><div class="sb-val">${g('cig') || '—'}</div></div>
-    <div class="sb-item"><div class="sb-lbl">Importo base gara</div><div class="sb-val">${g('importo') || '—'}</div><div class="sb-sub">IVA esclusa</div></div>
-    <div class="sb-item"><div class="sb-lbl">RTP Mandataria</div><div class="sb-val">${g('rtpMandataria') || '—'}</div><div class="sb-sub">${g('rtpCitta') || ''}</div></div>
-    <div class="sb-item"><div class="sb-lbl">Data</div><div class="sb-val">${g('dataElab') || '—'}</div></div>
-  </div>
-
-  <div class="content">
-    <div class="card acc">
-      <div class="card-lbl">Inquadramento</div>
-      <h2>${g('sec1Titolo') || 'Sezione 1'}</h2>
-      <p>${g('sec1Testo') || ''}</p>
-    </div>
-
-    <div class="card-img">${img(1)}</div>
-
-    ${dataCards.split('</div>')[0] + '</div>'}
-
-    <div class="card s2">
-      <div class="card-lbl">Proposta migliorativa</div>
-      <h2>${g('sec2Titolo') || 'Strategia'}</h2>
-      <ul class="criteria-ul">${criteriaHTML}</ul>
-    </div>
-
-    ${dataCards.split('</div>')[1] + '</div>'}
-
-  </div>
-
-  <div class="footer">
-    <div class="ftr-l"><strong>${g('rtpMandataria') || ''}</strong> · ${g('rtpCitta') || ''} · ${g('dlNome') || ''} · ${g('dlOrdine') || ''}</div>
-    <div class="ftr-c">${g('footerNote') || g('normativa') || ''}</div>
-    <div style="display:flex;align-items:center;gap:3mm;font-family:var(--fh);font-size:7pt;color:var(--ct);">
-      Tav. <span class="tav-num">${g('numTavola') || 'T-01'}</span>
-    </div>
-  </div>
-</div>
-</body>
-</html>`;
-
-  const win = window.open('', '_blank');
-  win.document.write(html);
-  win.document.close();
+  var W=window.open('','_blank');
+  W.document.write(buildSheet(C,S.fh,S.fb,S.gfh,S.gfb,logosHTML,sbItems,cellsJSON,
+    gv('tipoElaborato'),gv('progettoTitolo'),gv('progettoSottotitolo'),
+    gv('rtpMandataria'),gv('rtpCitta'),gv('dlNome'),gv('dlOrdine'),
+    gv('footerNote')||gv('normativa'),gv('numTavola')||'T-01'));
+  W.document.close();
 }
 
-// ── INIT: aggiungi 3 criteri di default ──────────────────
-addCriterio(); addCriterio(); addCriterio();
+function buildSheet(C,fh,fb,gfh,gfb,logosHTML,sbItems,cellsJSON,
+                    tipoEl,titolo,sottotitolo,mandataria,citta,dlNome,dlOrdine,footerNote,numTavola){
+  var css=''
+  +'*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}'
+  +':root{--fh:'+fh+';--fb:'+fb+';--c1:'+C.p+';--ca:'+C.a+';--cbg:'+C.bg+';--ct:'+C.tx+';--cd:'+C.cd+';--ck:'+C.ck+'}'
+  +'body{background:#2a2a2a;display:flex;flex-direction:column;align-items:center;padding:20px;gap:12px}'
+  +'.ctrl{display:flex;gap:10px;align-items:center;background:#1a1a1a;padding:8px 16px;border-radius:6px}'
+  +'.ctrl button{background:var(--c1);color:#fff;border:none;padding:8px 18px;font-size:12px;cursor:pointer;border-radius:3px;letter-spacing:1px;font-family:'+fh+'}'
+  +'.ctrl button:hover{opacity:.85}'
+  +'.hint{font-size:10px;color:#666;font-family:monospace}'
+  +'.sheet{width:420mm;height:297mm;background:var(--cbg);position:relative;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,.5)}'
+  +'.bgr{position:absolute;top:0;right:0;width:24mm;height:100%;background:var(--c1)}'
+  +'.bgr2{position:absolute;top:0;right:24mm;width:.8mm;height:100%;background:var(--ca)}'
+  +'.hdr{position:absolute;top:5mm;left:7mm;right:27mm;min-height:16mm;border-bottom:.35mm solid var(--c1);z-index:10;display:flex;align-items:flex-end;gap:4mm;padding-bottom:2mm}'
+  +'.hdr-t{flex:1}'
+  +'.hdr-tag{font-family:var(--fh);font-size:5.5pt;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--ca);margin-bottom:.8mm}'
+  +'.hdr-h1{font-family:var(--fh);font-size:13pt;font-weight:700;color:var(--c1);line-height:1.05;text-transform:uppercase;letter-spacing:.5px;word-break:break-word}'
+  +'.hdr-sub{font-family:var(--fb);font-size:6pt;font-weight:300;color:var(--ct);margin-top:1mm;line-height:1.3}'
+  +'.hdr-logos{display:flex;align-items:center;gap:2.5mm;flex-wrap:nowrap;flex-shrink:0;max-width:60mm;overflow:hidden}'
+  +'.sidebar{position:absolute;top:5mm;right:4mm;width:20mm;bottom:12mm;z-index:10;display:flex;flex-direction:column;gap:2mm}'
+  +'.ftr{position:absolute;bottom:5mm;left:7mm;right:27mm;height:6mm;border-top:.2mm solid #ccc;display:flex;align-items:center;justify-content:space-between;z-index:10;padding-top:1mm}'
+  +'.ftr-l{font-family:var(--fb);font-size:4.5pt;color:#aaa}'
+  +'.ftr-l strong{color:var(--ct);font-weight:500}'
+  +'.ftr-c{font-family:var(--fh);font-size:4.5pt;letter-spacing:1.5px;text-transform:uppercase;color:#bbb}'
+  +'.tnum{background:var(--c1);color:#fff;padding:.4mm 2mm;font-family:var(--fh);font-size:6.5pt;font-weight:600;letter-spacing:1px}'
+  +'#ca{position:absolute;z-index:10;left:7mm;top:26mm;right:27mm;bottom:12mm}'
+  +'.cell{position:absolute;overflow:hidden}'
+  +'.ctext{background:var(--cd);border-top:.7mm solid var(--c1)}'
+  +'.ctext.acc{border-top-color:var(--ca)}'
+  +'.cimg{overflow:hidden;border-top:.7mm solid var(--c1)}'
+  +'.cdark{background:var(--ck);border-top:.7mm solid var(--ca)}'
+  +'.cri li{font-family:var(--fb);font-size:6pt;color:var(--ct);padding-left:2.5mm;position:relative;line-height:1.35}'
+  +'.cri li::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:1.2mm;height:1.2mm;background:var(--ca)}'
+  // splitter
+  +'.spl{position:absolute;z-index:50;background:transparent;transition:background .12s}'
+  +'.spl:hover,.spl.drag{background:rgba(180,180,180,.3)}'
+  +'.spl-v{cursor:col-resize;top:0;bottom:0;width:8px;margin-left:-4px}'
+  +'.spl-h{cursor:row-resize;left:0;right:0;height:8px;margin-top:-4px}'
+  +'.spl::after{content:"";position:absolute;background:var(--ca);border-radius:2px;opacity:0;transition:opacity .12s}'
+  +'.spl:hover::after,.spl.drag::after{opacity:.8}'
+  +'.spl-v::after{left:50%;top:50%;transform:translate(-50%,-50%);width:3px;height:20px}'
+  +'.spl-h::after{left:50%;top:50%;transform:translate(-50%,-50%);width:20px;height:3px}'
+  +'@media print{body{background:none;padding:0}.ctrl,.spl{display:none}'
+  +'.sheet{width:420mm;height:297mm;box-shadow:none;page-break-after:always}'
+  +'@page{size:A3 landscape;margin:0}}';
+
+  // JS della finestra figlia — tutto concatenazione di stringhe
+  var js=''
+  +'var cells='+cellsJSON+';'
+  +'var L={c1:1/3,c2:2/3,r1:.5};'
+  +'var G=.006,MN=.12,MX=.85;'
+  +'function pct(v){return (v*100).toFixed(5)+"%";}'
+  +'function typeClass(t,acc){'
+  +'  if(t==="text") return "cell ctext"+(acc?" acc":"");'
+  +'  if(t==="img")  return "cell cimg";'
+  +'  return "cell cdark";'
+  +'}'
+  +'function build(){'
+  +'  var area=document.getElementById("ca");'
+  +'  area.innerHTML="";'
+  +'  var c1=L.c1,c2=L.c2,r1=L.r1,g=G;'
+  // cols: [left_frac, width_frac]
+  +'  var cols=[[0,c1-g/2],[c1+g/2,c2-c1-g],[c2+g/2,1-c2-g/2]];'
+  // rows: [top_frac, height_frac]
+  +'  var rows=[[0,r1-g/2],[r1+g/2,1-r1-g/2]];'
+  +'  cells.forEach(function(cd){'
+  +'    var col=cols[cd.c], row=rows[cd.r];'
+  +'    var w=cd.span2?(c2-g/2-col[0]):col[1];'
+  +'    var div=document.createElement("div");'
+  +'    div.id=cd.id;'
+  +'    div.className=typeClass(cd.type,cd.acc);'
+  +'    div.style.left=pct(col[0]);'
+  +'    div.style.top=pct(row[0]);'
+  +'    div.style.width=pct(w);'
+  +'    div.style.height=pct(row[1]);'
+  +'    div.innerHTML=cd.html;'
+  +'    area.appendChild(div);'
+  +'  });'
+  // splitter V1: tra col0 e col1 (full height)
+  +'  mkSpl("sv1","v","c1",pct(c1),"0","8px","100%");'
+  // splitter V2: tra col1 e col2 (full height)
+  +'  mkSpl("sv2","v","c2",pct(c2),"0","8px","100%");'
+  // splitter H: tra r0 e r1
+  +'  mkSpl("sh1","h","r1","0",pct(r1),"100%","8px");'
+  +'}'
+  +'function mkSpl(id,axis,which,l,t,w,h){'
+  +'  var area=document.getElementById("ca");'
+  +'  var s=document.createElement("div");'
+  +'  s.id=id; s.dataset.axis=axis; s.dataset.which=which;'
+  +'  s.className="spl spl-"+(axis==="v"?"v":"h");'
+  +'  s.style.position="absolute";'
+  +'  s.style.left=l; s.style.top=t;'
+  +'  s.style.width=w; s.style.height=h;'
+  +'  area.appendChild(s);'
+  +'  var s0,f0;'
+  +'  s.addEventListener("mousedown",function(ev){'
+  +'    ev.preventDefault();'
+  +'    s.classList.add("drag");'
+  +'    document.body.style.cursor=axis==="v"?"col-resize":"row-resize";'
+  +'    s0=axis==="v"?ev.clientX:ev.clientY;'
+  +'    f0=L[which];'
+  // legge dimensione DENTRO mousemove per avere rect aggiornato
+  +'    function mv(ev){'
+  +'      var r=document.getElementById("ca").getBoundingClientRect();'
+  +'      var sz=axis==="v"?r.width:r.height;'
+  +'      if(sz<1) return;'
+  +'      var cn=axis==="v"?ev.clientX:ev.clientY;'
+  +'      var nf=f0+(cn-s0)/sz;'
+  +'      nf=Math.min(MX,Math.max(MN,nf));'
+  +'      if(which==="c1"&&nf>=L.c2-0.09) nf=L.c2-0.09;'
+  +'      if(which==="c2"&&nf<=L.c1+0.09) nf=L.c1+0.09;'
+  +'      L[which]=nf; build();'
+  +'    }'
+  +'    function up(){'
+  +'      s.classList.remove("drag");'
+  +'      document.body.style.cursor="";'
+  +'      window.removeEventListener("mousemove",mv);'
+  +'      window.removeEventListener("mouseup",up);'
+  +'    }'
+  +'    window.addEventListener("mousemove",mv);'
+  +'    window.addEventListener("mouseup",up);'
+  +'  });'
+  +'}'
+  +'window.addEventListener("load",function(){build();});';
+
+  return '<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8">'
+  +'<title>'+esc(titolo)+' \u00b7 '+esc(numTavola)+'</title>'
+  +'<link href="https://fonts.googleapis.com/css2?family='+gfh+'&family='+gfb+'&display=swap" rel="stylesheet">'
+  +'<style>'+css+'</style></head><body>'
+  +'<div class="ctrl"><button onclick="window.print()">&#9113; Stampa / PDF</button>'
+  +'<span class="hint">&#8596; Trascina le linee divisorie per ridimensionare &nbsp;|&nbsp; Ctrl+P per stampare</span></div>'
+  +'<div class="sheet">'
+  +'<div class="bgr"></div><div class="bgr2"></div>'
+  +'<div class="hdr"><div class="hdr-t">'
+  +'<div class="hdr-tag">'+esc(tipoEl)+'</div>'
+  +'<div class="hdr-h1">'+esc(titolo)+'</div>'
+  +'<div class="hdr-sub">'+esc(sottotitolo)+'</div>'
+  +'</div><div class="hdr-logos">'+logosHTML+'</div></div>'
+  +'<div class="sidebar">'+sbItems+'</div>'
+  +'<div id="ca"></div>'
+  +'<div class="ftr">'
+  +'<div class="ftr-l"><strong>'+esc(mandataria)+'</strong> \u00b7 '+esc(citta)+' \u00b7 '+esc(dlNome)+' \u00b7 '+esc(dlOrdine)+'</div>'
+  +'<div class="ftr-c">'+esc(footerNote)+'</div>'
+  +'<div style="display:flex;align-items:center;gap:3mm">Tav. <span class="tnum">'+esc(numTavola)+'</span></div>'
+  +'</div></div>'
+  +'<script>'+js+'<\/script>'
+  +'</body></html>';
+}
+
+addCrit(); addCrit(); addCrit();
 </script>
 </body>
 </html>
