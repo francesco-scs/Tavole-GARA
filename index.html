@@ -62,6 +62,23 @@ body{background:var(--bg);color:var(--txt);font-family:var(--ff);height:100vh;di
 .cf{display:flex;flex-direction:column;gap:4px;align-items:center}
 .cf label{font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
 .cf input[type=color]{width:42px;height:42px;border-radius:6px;border:2px solid var(--brd);padding:2px;background:var(--p2);cursor:pointer}
+.boxsel{background:var(--p2);border:1px solid var(--brd);border-radius:5px;padding:7px 10px;cursor:pointer;font-size:10px;color:var(--mut);font-family:var(--fm);text-align:left;transition:all .12s;width:100%}
+.boxsel:hover{border-color:var(--mut);color:var(--txt)}
+.boxsel.sel{border-color:var(--acc);color:var(--txt);background:rgba(124,154,146,.07)}
+.bsn{font-size:8px;color:var(--mut);margin-top:1px}
+.brow{display:grid;grid-template-columns:52px 1fr 82px 36px;gap:5px;align-items:center;margin-bottom:4px}
+.brow span{font-size:10px;color:var(--mut)}
+.brow input[type=number]{background:var(--p2);border:1px solid var(--brd);border-radius:4px;color:var(--txt);font-family:var(--fm);font-size:11px;padding:5px 7px;outline:none;width:100%}
+.brow input[type=number]:focus{border-color:var(--acc)}
+.brow select{background:var(--p2);border:1px solid var(--brd);border-radius:4px;color:var(--txt);font-family:var(--fm);font-size:11px;padding:5px 7px;outline:none;width:100%}
+.brow select:focus{border-color:var(--acc)}
+.brow select option{background:var(--p2)}
+.brow input[type=color]{width:34px;height:30px;border-radius:4px;border:1px solid var(--brd);padding:1px;background:var(--p2);cursor:pointer}
+.bcgrid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+.bcf{display:flex;flex-direction:column;gap:3px}
+.bcf label{font-size:9px;color:var(--mut);letter-spacing:1px;text-align:center}
+.bcf input{background:var(--p2);border:1px solid var(--brd);border-radius:4px;color:var(--txt);font-family:var(--fm);font-size:11px;padding:5px 8px;outline:none;text-align:center}
+.bcf input:focus{border-color:var(--acc)}
 .clist{display:flex;flex-direction:column;gap:7px}
 .cb{background:var(--p2);border:1px solid var(--brd);border-radius:6px;padding:12px;display:grid;grid-template-columns:60px 1fr auto;gap:9px;align-items:start}
 .ctag{background:var(--acc);color:#fff;font-family:var(--fm);font-size:10px;padding:4px 7px;border-radius:3px;text-align:center}
@@ -253,6 +270,31 @@ body{background:var(--bg);color:var(--txt);font-family:var(--ff);height:100vh;di
       <div class="pc" onclick="applyPal(this,'#2e2e2e','#a0a0a0','#f8f8f6','#3a3a3a','#ffffff','#2e2e2e')"><div class="psw"><div style="background:#2e2e2e"></div><div style="background:#a0a0a0"></div><div style="background:#f8f8f6"></div><div style="background:#3a3a3a"></div></div><div class="pn">Grafite · Cenere</div><div class="pd">Bianco e nero elegante</div></div>
     </div>
   </div>
+  <div class="card"><div class="ct">Riquadri — lati e spigoli</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px">
+      <button class="boxsel sel" onclick="selBox(this,'c00')"><strong>Testo 1</strong><div class="bsn">alto sx</div></button>
+      <button class="boxsel" onclick="selBox(this,'c01')"><strong>Immagine 1</strong><div class="bsn">centro alto</div></button>
+      <button class="boxsel" onclick="selBox(this,'c02')"><strong>Dato 1</strong><div class="bsn">alto dx</div></button>
+      <button class="boxsel" onclick="selBox(this,'c10')"><strong>Testo 2</strong><div class="bsn">basso sx</div></button>
+      <button class="boxsel" onclick="selBox(this,'c11')"><strong>Immagine 2</strong><div class="bsn">centro basso</div></button>
+      <button class="boxsel" onclick="selBox(this,'c12')"><strong>Immagine 3</strong><div class="bsn">basso dx</div></button>
+    </div>
+    <div style="font-size:9px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Lati — bordi</div>
+    <div style="display:grid;grid-template-columns:52px 1fr 82px 36px;gap:5px;align-items:center;margin-bottom:6px">
+      <span style="font-size:8px;color:var(--mut)"></span><span style="font-size:8px;color:var(--mut)">Stile</span><span style="font-size:8px;color:var(--mut)">Spessore (mm)</span><span style="font-size:8px;color:var(--mut)">Col.</span>
+    </div>
+    <div class="brow"><span>Alto</span><select id="bside_top_s" onchange="onBoxChange()"><option value="none">nessuno</option><option value="solid">solido</option><option value="dashed">tratteggiato</option><option value="dotted">puntinato</option></select><input type="number" id="bside_top_w" min="0" max="5" step="0.1" value="0.7" onchange="onBoxChange()"><input type="color" id="bside_top_c" value="#8a9e8c" onchange="onBoxChange()"></div>
+    <div class="brow"><span>Destra</span><select id="bside_right_s" onchange="onBoxChange()"><option value="none">nessuno</option><option value="solid">solido</option><option value="dashed">tratteggiato</option><option value="dotted">puntinato</option></select><input type="number" id="bside_right_w" min="0" max="5" step="0.1" value="0" onchange="onBoxChange()"><input type="color" id="bside_right_c" value="#2c3e50" onchange="onBoxChange()"></div>
+    <div class="brow"><span>Basso</span><select id="bside_bottom_s" onchange="onBoxChange()"><option value="none">nessuno</option><option value="solid">solido</option><option value="dashed">tratteggiato</option><option value="dotted">puntinato</option></select><input type="number" id="bside_bottom_w" min="0" max="5" step="0.1" value="0" onchange="onBoxChange()"><input type="color" id="bside_bottom_c" value="#2c3e50" onchange="onBoxChange()"></div>
+    <div class="brow"><span>Sinistra</span><select id="bside_left_s" onchange="onBoxChange()"><option value="none">nessuno</option><option value="solid">solido</option><option value="dashed">tratteggiato</option><option value="dotted">puntinato</option></select><input type="number" id="bside_left_w" min="0" max="5" step="0.1" value="0" onchange="onBoxChange()"><input type="color" id="bside_left_c" value="#2c3e50" onchange="onBoxChange()"></div>
+    <div style="font-size:9px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;margin:14px 0 8px">Spigoli — raggio (mm)</div>
+    <div class="bcgrid">
+      <div class="bcf"><label>↖ Alto-Sx</label><input type="number" id="bcorner_tl" min="0" max="30" step="0.5" value="0" onchange="onBoxChange()"></div>
+      <div class="bcf"><label>↗ Alto-Dx</label><input type="number" id="bcorner_tr" min="0" max="30" step="0.5" value="0" onchange="onBoxChange()"></div>
+      <div class="bcf"><label>↙ Basso-Sx</label><input type="number" id="bcorner_bl" min="0" max="30" step="0.5" value="0" onchange="onBoxChange()"></div>
+      <div class="bcf"><label>↘ Basso-Dx</label><input type="number" id="bcorner_br" min="0" max="30" step="0.5" value="0" onchange="onBoxChange()"></div>
+    </div>
+  </div>
   <div class="snav"><button class="btn bgh" onclick="goStep(4)">← Indietro</button><button class="btn bpr" onclick="goStep(6)">Avanti →</button></div>
 </div>
 
@@ -423,7 +465,8 @@ var S = {
   fh:"'Barlow Condensed',sans-serif", gfh:"Barlow+Condensed:wght@700",
   fb:"'Barlow',sans-serif",           gfb:"Barlow:wght@300;400;500",
   logos:{1:null,2:null,3:null,4:null},
-  imgs:{1:null,2:null,3:null}
+  imgs:{1:null,2:null,3:null},
+  boxStyles:{}
 };
 var critN=0;
 
@@ -438,6 +481,7 @@ function goStep(n){
   });
   document.getElementById('topLabel').textContent='Passo '+n+' di 7';
   document.getElementById('pgf').style.width=(n/7*100)+'%';
+  if(n===5){initBoxStyles();loadBoxUI();}
   if(n===7) buildSummary();
 }
 
@@ -460,6 +504,82 @@ function applyPal(el,p,a,bg,tx,cd,ck){
   document.getElementById('cText').value=tx;
   document.getElementById('cCard').value=cd;
   document.getElementById('cDark').value=ck;
+}
+
+// ── BOX STYLES ─────────────────────────────────────────────
+var curBox='c00';
+var boxIds=['c00','c01','c02','c10','c11','c12'];
+
+function initBoxStyles(){
+  var allOk=boxIds.every(function(id){return S.boxStyles[id];});
+  if(allOk) return;
+  var p=document.getElementById('cPrimary').value;
+  var a=document.getElementById('cAccent').value;
+  var defTop={c00:a,c01:p,c02:a,c10:p,c11:p,c12:p};
+  boxIds.forEach(function(id){
+    if(!S.boxStyles[id]){
+      S.boxStyles[id]={
+        borders:{
+          top:   {s:'solid',w:'0.7',c:defTop[id]},
+          right: {s:'none', w:'0',  c:p},
+          bottom:{s:'none', w:'0',  c:p},
+          left:  {s:'none', w:'0',  c:p}
+        },
+        corners:{tl:'0',tr:'0',bl:'0',br:'0'}
+      };
+    }
+  });
+}
+
+function selBox(el,id){
+  saveBoxUI();
+  curBox=id;
+  document.querySelectorAll('.boxsel').forEach(function(b){b.classList.remove('sel');});
+  el.classList.add('sel');
+  loadBoxUI();
+}
+
+function onBoxChange(){saveBoxUI();}
+
+function saveBoxUI(){
+  if(!S.boxStyles[curBox]) return;
+  var bs=S.boxStyles[curBox];
+  ['top','right','bottom','left'].forEach(function(s){
+    bs.borders[s].s=document.getElementById('bside_'+s+'_s').value;
+    bs.borders[s].w=document.getElementById('bside_'+s+'_w').value;
+    bs.borders[s].c=document.getElementById('bside_'+s+'_c').value;
+  });
+  ['tl','tr','bl','br'].forEach(function(c){
+    bs.corners[c]=document.getElementById('bcorner_'+c).value;
+  });
+}
+
+function loadBoxUI(){
+  if(!S.boxStyles[curBox]) return;
+  var bs=S.boxStyles[curBox];
+  ['top','right','bottom','left'].forEach(function(s){
+    document.getElementById('bside_'+s+'_s').value=bs.borders[s].s;
+    document.getElementById('bside_'+s+'_w').value=bs.borders[s].w;
+    document.getElementById('bside_'+s+'_c').value=bs.borders[s].c;
+  });
+  ['tl','tr','bl','br'].forEach(function(c){
+    document.getElementById('bcorner_'+c).value=bs.corners[c];
+  });
+}
+
+function boxCSS(bs){
+  var css='';
+  ['top','right','bottom','left'].forEach(function(s){
+    var b=bs.borders[s];
+    if(b.s==='none'||parseFloat(b.w||0)===0){
+      css+='border-'+s+':none;';
+    } else {
+      css+='border-'+s+':'+b.w+'mm '+b.s+' '+b.c+';';
+    }
+  });
+  var c=bs.corners;
+  css+='border-radius:'+(c.tl||0)+'mm '+(c.tr||0)+'mm '+(c.br||0)+'mm '+(c.bl||0)+'mm;';
+  return css;
 }
 
 // ── CRITERI ────────────────────────────────────────────────
@@ -593,6 +713,8 @@ function bNum(lbl,val,unit){
 
 // ── GENERA ─────────────────────────────────────────────────
 function generate(){
+  saveBoxUI();
+  initBoxStyles();
   var crits='';
   document.querySelectorAll('.cb').forEach(function(b){
     var id=b.id.replace('cb','');
@@ -622,15 +744,21 @@ function generate(){
   // r1: [testo2+criteri, img2, img3]
   var cells=[
     {id:'c00',r:0,c:0,type:'text',acc:true, span2:false,
-     html: bLbl('Inquadramento')+bH2(gv('sec1Titolo')||'Sezione 1')+bP(gv('sec1Testo'))},
-    {id:'c01',r:0,c:1,type:'img', acc:false,span2:false, html:imgCell(1)},
+     html: bLbl('Inquadramento')+bH2(gv('sec1Titolo')||'Sezione 1')+bP(gv('sec1Testo')),
+     customStyle:boxCSS(S.boxStyles.c00)},
+    {id:'c01',r:0,c:1,type:'img', acc:false,span2:false, html:imgCell(1),
+     customStyle:boxCSS(S.boxStyles.c01)},
     {id:'c02',r:0,c:2,type:'dark',acc:false,span2:false,
-     html: bNum(gv('d1Label')||'Dato 1',gv('d1Val')||'—',gv('d1Unit')||'')},
+     html: bNum(gv('d1Label')||'Dato 1',gv('d1Val')||'—',gv('d1Unit')||''),
+     customStyle:boxCSS(S.boxStyles.c02)},
     {id:'c10',r:1,c:0,type:'text',acc:false,span2:false,
      html: bLbl('Proposta migliorativa')+bH2(gv('sec2Titolo')||'Strategia')
-           +'<ul style="list-style:none;margin:1mm 3mm 0;display:grid;grid-template-columns:1fr 1fr;gap:1mm">'+crits+'</ul>'},
-    {id:'c11',r:1,c:1,type:'img', acc:false,span2:false, html:imgCell(2)},
-    {id:'c12',r:1,c:2,type:'img', acc:false,span2:false, html:imgCell(3)},
+           +'<ul style="list-style:none;margin:1mm 3mm 0;display:grid;grid-template-columns:1fr 1fr;gap:1mm">'+crits+'</ul>',
+     customStyle:boxCSS(S.boxStyles.c10)},
+    {id:'c11',r:1,c:1,type:'img', acc:false,span2:false, html:imgCell(2),
+     customStyle:boxCSS(S.boxStyles.c11)},
+    {id:'c12',r:1,c:2,type:'img', acc:false,span2:false, html:imgCell(3),
+     customStyle:boxCSS(S.boxStyles.c12)},
   ];
 
   var cellsJSON=JSON.stringify(cells);
@@ -728,10 +856,7 @@ function buildSheet(C,fh,fb,gfh,gfb,logosHTML,sbItems,cellsJSON,
   +'    var div=document.createElement("div");'
   +'    div.id=cd.id;'
   +'    div.className=typeClass(cd.type,cd.acc);'
-  +'    div.style.left=pct(col[0]);'
-  +'    div.style.top=pct(row[0]);'
-  +'    div.style.width=pct(w);'
-  +'    div.style.height=pct(row[1]);'
+  +'    div.style.cssText="left:"+pct(col[0])+";top:"+pct(row[0])+";width:"+pct(w)+";height:"+pct(row[1])+";"+(cd.customStyle||"");'
   +'    div.innerHTML=cd.html;'
   +'    area.appendChild(div);'
   +'  });'
